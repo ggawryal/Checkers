@@ -28,10 +28,15 @@ vector<vector<int> > pawnPositionToId;
 struct State{
     int x,y;
     int pawnMask;
+    bool amIqueen;
     friend bool operator<(const State& a, const State& b){
         if(a.x == b.x){
-            if(a.y == b.y)
+            if(a.y == b.y){
+                if(a.pawnMask == b.pawnMask){
+                    return a.amIqueen < b.amIqueen;
+                }
                 return a.pawnMask < b.pawnMask;
+            }
             return a.y < b.y;
         }
         return a.x < b.x;
@@ -53,9 +58,7 @@ bool canJumpOver(int x,int y,int ex,int ey){
 }
 
 
-
 void solvePawn(State state,int res){
-   // cout<<state.x<<" "<<state.y<<endl;
     maxi = max(maxi,res);
     if(dp.count(state) != 0)
         return;
@@ -64,9 +67,7 @@ void solvePawn(State state,int res){
     vector<pair<int,int> > cells = {{1,1},{-1,1},{-1,-1},{1,-1}};
     for(int i=0;i<cells.size();i++){
         int ex = cells[i].first, ey = cells[i].second;
-        //cout<<ex<<" "<<ey<<" "<<state.x+ex<<" "<<state.y+ey<<endl;
         if(canJumpOver(state.x+ex,state.y+ey,ex,ey)){
-          //  cout<<"cjo "<<state.x+ex<<" "<<state.y+ey<<endl;
             State newState = state;
             newState.x += ex*2;
             newState.y += ey*2;
@@ -85,6 +86,44 @@ void solvePawn(State state,int res){
 
 }
 
+void solveQueen(State state,int res){
+    maxi = max(maxi,res);
+    if(dp.count(state) != 0)
+        return;
+    dp[state] = res;
+    vector<pair<int,int> > cells = {{1,1},{-1,1},{-1,-1},{1,-1}};
+    for(int i=0;i<cells.size();i++){
+        int ex = cells[i].first, ey = cells[i].second;
+
+        int j = 1;
+        while(isInBoard(state.x + j*ex, state.y + j*ey) && board[state.x + j*ex][state.y + j*ey] == 0)
+            j++;
+
+        if(isInBoard(state.x + j*ex, state.y + j*ey) && (board[state.x + j*ex][state.y + j*ey] == 3 || board[state.x + j*ex][state.y + j*ey] == 4)){
+            int j2 = j+1;
+            while(isInBoard(state.x + j2*ex, state.y + j2*ey) && board[state.x + j2*ex][state.y + j2*ey] == 0){
+                State newState = state;
+                newState.x += j2*ex;
+                newState.y += j2*ey;
+                //cout<<newState.x<<" "<<newState.y<<endl;
+                newState.pawnMask |= (1<<pawnPositionToId[state.x+j*ex][state.y+j*ey]);
+
+                bool queen = (board[state.x+j*ex][state.y+j*ey] == 4);
+                board[state.x + j*ex][state.y + j*ey] = 5;
+
+                solveQueen(newState,res+1);
+
+                if(queen)
+                    board[state.x + j*ex][state.y + j*ey] = 4;
+                else
+                    board[state.x + j*ex][state.y + j*ey] = 3;
+                j2++;
+            }
+
+        }
+
+    }
+}
 
 
 
@@ -113,6 +152,7 @@ int main(){
             if(board[i][j] == 1){
                 board[i][j] = 0;
                 State state;
+                state.amIqueen = false;
                 state.pawnMask = 0; state.x = i; state.y = j;
                 solvePawn(state,0);
                 cout<<maxi<<" ";
@@ -121,8 +161,9 @@ int main(){
             else{
                 board[i][j] = 0;
                 State state;
+                state.amIqueen = true;
                 state.pawnMask = 0; state.x = i; state.y = j;
-                solvePawn(state,0);
+                solveQueen(state,0);
                 cout<<maxi<<" ";
                 board[i][j] = 2;
             }
