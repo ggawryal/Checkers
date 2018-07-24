@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1532377152 source:d:\programowanie\warcaby\main.cpp
+1532424315 source:d:\programowanie\warcaby\main.cpp
 	<SFML/Graphics.hpp>
 
 1532364783 d:\programowanie\libs\sfml\include\sfml\graphics.hpp
@@ -410,4 +410,12 @@
 	<SFML/Graphics/PrimitiveType.hpp>
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Window/GlResource.hpp>
+
+1532424731 d:\programowanie\warcaby\headers\maxijumpsequencefinder.h
+	<iostream>
+	<vector>
+	<map>
+
+1532424306 source:d:\programowanie\warcaby\maxijumpsequencefinder.cpp
+	"MaxiJumpSequenceFinder.h"
 
