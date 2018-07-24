@@ -77,6 +77,9 @@ public:
         }
     }
     void setCellSize(int x,int y){
+        for(auto& column:checkboard)
+            for(auto &sprite : column)
+                sprite.setScale(x/(float)cellSize.x, y/(float)cellSize.y);
         cellSize = sf::Vector2f(x,y);
         fixSprites();
     }
@@ -93,7 +96,7 @@ public:
         fixSprites();
     }
 
-    void update(vector<vector<Checkers> >& board){
+    void updateSize(vector<vector<Checkers> >& board){
         if(board.size() != checkboard.size() || (board.size() > 0 && board[0].size() != checkboard[0].size()))
             resizeBoard(board.size(),board[0].size());
 
@@ -126,7 +129,7 @@ public:
     }
     void update(){
         drawer.fixSprites();
-        drawer.update(board);
+        drawer.updateSize(board);
     }
 };
 
@@ -143,8 +146,9 @@ int main(){
     textureManager.loadAll();
     Checkboard checkboard;
     checkboard.setSize(8,8);
-    checkboard.drawer.setImageSize(700,700);
-    checkboard.update();
+    checkboard.drawer.setCellSize(80,80);
+    //checkboard.drawer.setImageSize(700,700);
+
     while (window.isOpen()){
         sf::Event event;
         while (window.pollEvent(event)){
