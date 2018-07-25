@@ -53,6 +53,8 @@ class CheckBoardDrawer : public sf::Drawable{
 public:
     vector<vector<sf::Sprite> > checkboard;
     vector<CheckerOnGrid > checkers;
+
+
     sf::Vector2i position = sf::Vector2i(0,0);
     sf::Vector2f cellSize = sf::Vector2f(0,0);
 
@@ -62,7 +64,7 @@ public:
         for(int i=0;i<x;i++){
             for(int j=0;j<y;j++){
                 checkboard[i].push_back(sf::Sprite());
-                if((i+j) % 2  == 0)
+                if((i+j) % 2  == 1)
                     checkboard[i].back().setTexture(TextureManager::instance().get("blackCell 1"));
                 else
                     checkboard[i].back().setTexture(TextureManager::instance().get("whiteCell 1"));
@@ -105,13 +107,6 @@ public:
 
         cellSize = sf::Vector2f(x/(float)(checkboard.size()), y/(float)(checkboard[0].size()));
         setCellSize(cellSize.x,cellSize.y);
-        /*for(auto& column:checkboard)
-            for(auto &sprite : column)
-                sprite.setScale(cellSize.x/(float)standardSize.x, cellSize.y/(float)standardSize.y);
-
-        for(auto &checker :checkers)
-            checker.sprite.setScale(cellSize.x/(float)standardSize.x, cellSize.y/(float)standardSize.y);
-        fixSprites();*/
     }
     void addCheckerImage(int x,int y,Checkers type){
         checkers.push_back(CheckerOnGrid());
@@ -143,6 +138,9 @@ public:
 
     }
 };
+
+
+
 
 class Checkboard{
     vector<vector<Checkers> > board;
@@ -184,7 +182,33 @@ public:
 };
 
 
+class CheckersArranger{
+    Checkboard& checkboard;
+public:
+    CheckersArranger(Checkboard& c) : checkboard(c){}
 
+    void arrange(int heightBlack, int heightWite, bool blackUpper = true){
+        assert(heightBlack + heightWite <= checkboard.getHeight());
+
+        Checkers upper_pawn = black_pawn;
+        Checkers lower_pawn = white_pawn;
+
+        if(blackUpper == false){
+            swap(upper_pawn,lower_pawn);
+            swap(heightBlack,heightWite);
+        }
+
+        for(int i=0;i<heightBlack;i++)
+            for(int j=0;j<checkboard.getWidth();j++)
+                if((i+j) % 2 == 1)
+                    checkboard.addChecker(j,i,upper_pawn);
+
+        for(int i=checkboard.getHeight()-1; i>=checkboard.getHeight()-heightWite; i--)
+            for(int j=0;j<checkboard.getWidth();j++)
+                if((i+j) % 2 == 1)
+                    checkboard.addChecker(j,i,lower_pawn);
+    }
+};
 
 
 
@@ -197,11 +221,12 @@ int main(){
     Checkboard checkboard;
     checkboard.setSize(8,8);
 
-    checkboard.addChecker(2,2,Checkers::black_pawn);
-    checkboard.addChecker(3,3,Checkers::black_pawn);
-    checkboard.addChecker(4,4,Checkers::white_queen);
+    CheckersArranger arranger(checkboard);
+    arranger.arrange(3,3);
 
-    checkboard.drawer.setImageSize(800,800);
+
+
+    checkboard.drawer.setImageSize(750,750);
     while (window.isOpen()){
         sf::Event event;
         while (window.pollEvent(event)){
