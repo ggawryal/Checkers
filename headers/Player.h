@@ -1,6 +1,6 @@
 #ifndef PLAYER_H
 #define PLAYER_H
-
+ #include "Grid.h"
 
 class Player{
     bool color;
@@ -15,6 +15,16 @@ class Player{
             color = white;
         }
 
+};
+
+class HumanPlayer : public Player{
+    GridPositioner gridPositioner;
+
+    virtual void processTurn() override{
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+
+        }
+    }
 };
 
 #endif // PLAYER_H

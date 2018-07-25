@@ -7,6 +7,9 @@
 #include "Grid.h"
 using namespace std;
 
+struct NotImplementedException : public std::logic_error{
+    NotImplementedException() : std::logic_error("Function not yet implemented") { };
+};
 
 enum Checkers {empty = 0, white_pawn = 1, white_queen = 2, black_pawn = 3, black_queen = 4};
 
@@ -141,7 +144,8 @@ public:
     int setSize(int x,int y){
         board.clear();
         board.resize(x,vector<Checkers>(y));
-        update();
+        drawer.fixSprites();
+        drawer.updateSize(board);
     }
     int getWidth(){
         return board.size();
@@ -149,11 +153,13 @@ public:
     int getHeight(){
         return board.size() == 0 ? 0 : board[0].size();
     }
-    void update(){
-        drawer.fixSprites();
-        drawer.updateSize(board);
+    Checkers getChecker(int x,int y){
+        assert(x < getWidth());
+        assert(y < getHeight());
+        assert(x >=0);
+        assert(y >= 0);
+        return board[x][y];
     }
-
     void addChecker(int x,int y,Checkers type){
         assert(x < board.size());
         assert(board.size() > 0);
@@ -171,7 +177,6 @@ public:
         board[x][y] = type;
         drawer.addChecker(x,y,type);
     }
-
     void removeChecker(int x, int y){
         assert(x < board.size());
         assert(board.size() > 0);
@@ -228,6 +233,103 @@ public:
     }
 };
 
+class MoveController{
+    bool whiteOnTurn = true;
+    Checkboard& checkboard;
+public:
+    MoveController(Checkboard&c) : checkboard(c){}
+    Checkers getChecker(int x,int y){
+        return checkboard.getChecker(x,y);
+    }
+    bool isLegalMove(int x1, int y1,int x2,int y2){
+        Checkers cell1 = checkboard.getChecker(x1,y1);
+        Checkers cell2 = checkboard.getChecker(x2,y2);
+        cout<<"FSADGGAGAGDA "<<cell1<<" "<<cell2<<endl;
+        if(cell1 == Checkers::empty || cell2 != Checkers::empty)
+            return false;
+
+        vector<Checkers> enemies,myCheckers;
+        if(whiteOnTurn){
+            enemies = {Checkers::black_pawn, Checkers::black_queen};
+            myCheckers = {Checkers::white_pawn, Checkers::white_queen};
+        }
+        else{
+            enemies = {Checkers::white_pawn, Checkers::white_queen};
+            myCheckers = {Checkers::black_pawn, Checkers::black_queen};
+        }
+        cout<<"ch: "<<myCheckers[0]<<endl;
+        if(cell1 == myCheckers[0]){ //pawn
+            std::vector<std::pair<int,int> > directions = {{1,1},{-1,1},{-1,-1},{1,-1}};
+            for(int i=0;i<directions.size();i++){
+                if(x1 + 2*directions[i].first == x2 && y1 + 2*directions[i].second == y2){
+                    if(checkboard.getChecker((x1+x2)/2,(y1+y2)/2) == enemies[0] ||
+                        checkboard.getChecker((x1+x2)/2,(y1+y2)/2) == enemies[1])
+                        return true;
+                    return false;
+                }
+                if(x1 + directions[i].first == x2 && y1 + directions[i].second == y2)
+                    return true;
+            }
+            return false;
+        }
+        if(cell1 == myCheckers[1]) //queen
+            throw NotImplementedException();
+        return false;
+    }
+    void move(int x1,int y1,int x2,int y2){
+        checkboard.moveChecker(x1,y1,x2,y2);
+    }
+};
+
+class Player{
+    bool color = true;
+    public:
+        virtual void processTurn() = 0;
+        bool playsWhite(){
+            return color;
+        }
+        void setColor(bool white){
+            color = white;
+        }
+
+
+};
+
+class HumanPlayer : public Player{
+    GridPositioner& gridPositioner;
+    MoveController& moveController;
+    sf::RenderWindow& window;
+    sf::Vector2i currentPawn = sf::Vector2i(-1,-1);
+public:
+    HumanPlayer(sf::RenderWindow& rw, GridPositioner& gd, MoveController& mv) :gridPositioner(gd), window(rw), moveController(mv) {}
+    virtual ~HumanPlayer(){}
+
+    virtual void processTurn() override{
+        cout<<currentPawn.x<<" {{}] "<<currentPawn.y<<endl;
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+            if(currentPawn == sf::Vector2i(-1,-1)){
+                auto cell = gridPositioner.getCellUnder(sf::Mouse::getPosition(window));
+                Checkers ch = moveController.getChecker(cell.x,cell.y);
+                if(playsWhite()){
+                    if(ch == Checkers::white_pawn || ch == Checkers::white_queen){
+                        currentPawn = cell;
+                        sf::sleep(sf::milliseconds(1000));
+                    }
+                }
+            }
+            else{
+                auto cell = gridPositioner.getCellUnder(sf::Mouse::getPosition(window));
+                cout<<cell.x<<" "<<cell.y<<endl;
+                if(moveController.isLegalMove(currentPawn.x,currentPawn.y,cell.x,cell.y)){
+                   moveController.move(currentPawn.x,currentPawn.y,cell.x,cell.y);
+                   sf::sleep(sf::milliseconds(1000));
+                   currentPawn = sf::Vector2i(-1,-1);
+                }
+            }
+        }
+    }
+};
+
 
 int main(){
     sf::RenderWindow window(sf::VideoMode(1280, 800), "Checkers!");
@@ -245,20 +347,19 @@ int main(){
 
     GridPositioner gp(checkboard.drawer);
 
+    MoveController mv(checkboard);
+    HumanPlayer player(window,gp,mv);
+
     while (window.isOpen()){
         sf::Event event;
         while (window.pollEvent(event)){
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-            auto pos = gp.getCellUnder(sf::Mouse::getPosition(window));
-            if(pos.x != -1 && pos.y != -1){
-                checkboard.removeChecker(pos.x,pos.y);
-            }
-        }
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
-            checkboard.drawer.setImageSize(500,500);
+
+        player.processTurn();
+      //  if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
+       //     checkboard.drawer.setImageSize(500,500);
 
         window.clear(sf::Color::Yellow);
         window.draw(checkboard.drawer);

@@ -61,11 +61,9 @@
 			<Add directory="D:/Programowanie/Libs/SFML/lib" />
 		</Linker>
 		<Unit filename="MaxiJumpSequenceFinder.cpp" />
-		<Unit filename="Player.cpp" />
 		<Unit filename="TextureManager.cpp" />
 		<Unit filename="headers/Grid.h" />
 		<Unit filename="headers/MaxiJumpSequenceFinder.h" />
-		<Unit filename="headers/Player.h" />
 		<Unit filename="headers/TextureManager.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
