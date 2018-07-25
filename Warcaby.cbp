@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="headers" />
 				</Compiler>
 				<Linker>
 					<Add library="sfml-graphics-s-d" />
@@ -33,6 +34,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add directory="headers" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -59,7 +61,12 @@
 			<Add directory="D:/Programowanie/Libs/SFML/lib" />
 		</Linker>
 		<Unit filename="MaxiJumpSequenceFinder.cpp" />
+		<Unit filename="Player.cpp" />
+		<Unit filename="TextureManager.cpp" />
+		<Unit filename="headers/Grid.h" />
 		<Unit filename="headers/MaxiJumpSequenceFinder.h" />
+		<Unit filename="headers/Player.h" />
+		<Unit filename="headers/TextureManager.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

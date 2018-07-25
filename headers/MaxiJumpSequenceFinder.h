@@ -1,5 +1,5 @@
-#ifndef MAXIJUMPSEQUENCEFINDER
-#define MAXIJUMPSEQUENCEFINDER
+#ifndef MAXIJUMPSEQUENCEFINDER_H
+#define MAXIJUMPSEQUENCEFINDER_H
 
 #include <iostream>
 #include <vector>
@@ -74,4 +74,4 @@ public:
 
 
 };
-#endif // MAXIJUMPSEQUENCEFINDER
+#endif // MAXIJUMPSEQUENCEFINDER_H

@@ -3,61 +3,16 @@
 #include <vector>
 #include <cassert>
 #include "MaxiJumpSequenceFinder.h"
+#include "TextureManager.h"
+#include "Grid.h"
 using namespace std;
 
-class TextureManager{
-    TextureManager() = default;
-    TextureManager(TextureManager const&) = delete;
-    TextureManager(TextureManager&&) = delete;
-    TextureManager& operator=(TextureManager const&) = delete;
-    TextureManager& operator=(TextureManager &&) = delete;
-
-    vector<sf::Texture> textures;
-    map<string,int> mapping;
-
-public:
-   static TextureManager& instance() {
-        static TextureManager myInstance;
-        return myInstance;
-    }
-
-    void load(const string name, const string filename, const sf::IntRect area = sf::IntRect()){
-        textures.push_back(sf::Texture());
-        textures.back().loadFromFile(filename,area);
-        mapping[name] = textures.size()-1;
-    }
-    void loadAll(){
-        load("blackCell 1","data/graph/board.png",sf::IntRect(0,0,89,89));
-        load("whiteCell 1","data/graph/board.png",sf::IntRect(89,0,89,89));
-
-        load("blackPawn 1","data/graph/checkers.png",sf::IntRect(0,0,89,89));
-        load("whitePawn 1","data/graph/checkers.png",sf::IntRect(89,0,89,89));
-
-        load("blackQueen 1","data/graph/checkers.png",sf::IntRect(0,89,89,89));
-        load("whiteQueen 1","data/graph/checkers.png",sf::IntRect(89,89,89,89));
-    }
-    sf::Texture& get(const string& name){
-        return textures[mapping[name]];
-    }
-
-};
 
 enum Checkers {empty = 0, white_pawn = 1, white_queen = 2, black_pawn = 3, black_queen = 4};
 
 struct CheckerOnGrid{
     int x,y;
     sf::Sprite sprite;
-};
-
-class Grid{
-protected:
-    sf::Vector2i position = sf::Vector2i(0,0);
-    sf::Vector2f cellSize = sf::Vector2f(0,0);
-    sf::Vector2i gridSize = sf::Vector2i(0,0);
-public:
-    virtual sf::Vector2i getPosition() const {return position;}
-    virtual sf::Vector2f getCellSize() const {return cellSize;}
-    virtual sf::Vector2i getGridSize() const {return gridSize;}
 };
 
 class CheckBoardDrawer : public sf::Drawable, public Grid{
@@ -179,9 +134,6 @@ public:
     }
 };
 
-
-
-
 class Checkboard{
     vector<vector<Checkers> > board;
 public:
@@ -248,7 +200,6 @@ public:
     }
 };
 
-
 class CheckersArranger{
     Checkboard& checkboard;
 public:
@@ -277,21 +228,6 @@ public:
     }
 };
 
-
-class GridPositioner{
-    Grid & grid;
-public:
-    GridPositioner(Grid& g) : grid(g) {}
-    sf::Vector2i getCellUnder(sf::Vector2i position){
-        if(position.x < grid.getPosition().x || position.y < grid.getPosition().y)
-            return sf::Vector2i(-1,-1);
-        int posx = (position.x - grid.getPosition().x) / grid.getCellSize().x;
-        int posy = (position.y - grid.getPosition().y) / grid.getCellSize().y;
-        if(posx >= grid.getGridSize().x || posy >= grid.getGridSize().y)
-            return sf::Vector2i(-1,-1);
-        return sf::Vector2i(posx,posy);
-    }
-};
 
 int main(){
     sf::RenderWindow window(sf::VideoMode(1280, 800), "Checkers!");
