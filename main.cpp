@@ -49,15 +49,31 @@ struct CheckerOnGrid{
     sf::Sprite sprite;
 };
 
-class CheckBoardDrawer : public sf::Drawable{
+class Grid{
+protected:
+    sf::Vector2i position = sf::Vector2i(0,0);
+    sf::Vector2f cellSize = sf::Vector2f(0,0);
+    sf::Vector2i gridSize = sf::Vector2i(0,0);
+public:
+    virtual sf::Vector2i getPosition() const {return position;}
+    virtual sf::Vector2f getCellSize() const {return cellSize;}
+    virtual sf::Vector2i getGridSize() const {return gridSize;}
+};
+
+class CheckBoardDrawer : public sf::Drawable, public Grid{
 public:
     vector<vector<sf::Sprite> > checkboard;
     vector<CheckerOnGrid > checkers;
 
-
-    sf::Vector2i position = sf::Vector2i(0,0);
-    sf::Vector2f cellSize = sf::Vector2f(0,0);
-
+    void setPosition(sf::Vector2i pos){
+        position = pos;
+    }
+    virtual sf::Vector2i getGridSize() const override{
+        if(checkboard.size() == 0)
+            return sf::Vector2i(0,0);
+        else
+            return sf::Vector2i(checkboard.size(),checkboard[0].size());
+    }
     void resizeBoard(int x,int y){
         checkboard.clear();
         checkboard.resize(x);
@@ -108,7 +124,8 @@ public:
         cellSize = sf::Vector2f(x/(float)(checkboard.size()), y/(float)(checkboard[0].size()));
         setCellSize(cellSize.x,cellSize.y);
     }
-    void addCheckerImage(int x,int y,Checkers type){
+
+    void addChecker(int x,int y,Checkers type){
         checkers.push_back(CheckerOnGrid());
         CheckerOnGrid& newChecker = checkers.back();
         newChecker.x = x;
@@ -123,6 +140,29 @@ public:
         if(type == Checkers::white_queen)
             newChecker.sprite.setTexture(TextureManager::instance().get("whiteQueen 1"));
     }
+    void moveChecker(int x,int y,int x2, int y2){
+        int pos = -1;
+        for(int i=0;i<checkers.size();i++){
+            if(checkers[i].x == x && checkers[i].y == y){
+                pos = i;
+                break;
+            }
+        }
+        assert(pos != -1);
+        checkers[pos].x = x2;
+        checkers[pos].y = y2;
+        checkers[pos].sprite.setPosition(sf::Vector2f(position.x + checkers[pos].x*cellSize.x, position.y + checkers[pos].y*cellSize.y));
+    }
+    void removeChecker(int x,int y){
+        for(auto it=checkers.begin();it != checkers.end();it++){
+            if(it->x == x && it->y == y){
+                cout<<"erasing"<<endl;
+                checkers.erase(it);
+                break;
+            }
+        }
+    }
+
     void updateSize(vector<vector<Checkers> >& board){
         if(board.size() != checkboard.size() || (board.size() > 0 && board[0].size() != checkboard[0].size()))
             resizeBoard(board.size(),board[0].size());
@@ -177,7 +217,34 @@ public:
             }
         }
         board[x][y] = type;
-        drawer.addCheckerImage(x,y,type);
+        drawer.addChecker(x,y,type);
+    }
+
+    void removeChecker(int x, int y){
+        assert(x < board.size());
+        assert(board.size() > 0);
+        assert(y < board[0].size());
+
+        if(board[x][y] == Checkers::empty)
+            cout<<"Warning: trying to remove checker from cell "<<x<<" "<<y<<" which is already empty"<<endl;
+        else{
+            board[x][y] = Checkers::empty;
+            drawer.removeChecker(x,y);
+        }
+    }
+    void moveChecker(int x,int y,int x2,int y2){
+        assert(board.size() > 0);
+        assert(x < board.size());
+        assert(y < board[0].size());
+        assert(x2 < board.size());
+        assert(y2 < board[0].size());
+
+        assert(board[x][y] != Checkers::empty);
+        assert(board[x2][y2] == Checkers::empty);
+
+        board[x2][y2] = board[x][y];
+        board[x][y] = Checkers::empty;
+        drawer.moveChecker(x,y,x2,y2);;
     }
 };
 
@@ -211,7 +278,20 @@ public:
 };
 
 
-
+class GridPositioner{
+    Grid & grid;
+public:
+    GridPositioner(Grid& g) : grid(g) {}
+    sf::Vector2i getCellUnder(sf::Vector2i position){
+        if(position.x < grid.getPosition().x || position.y < grid.getPosition().y)
+            return sf::Vector2i(-1,-1);
+        int posx = (position.x - grid.getPosition().x) / grid.getCellSize().x;
+        int posy = (position.y - grid.getPosition().y) / grid.getCellSize().y;
+        if(posx >= grid.getGridSize().x || posy >= grid.getGridSize().y)
+            return sf::Vector2i(-1,-1);
+        return sf::Vector2i(posx,posy);
+    }
+};
 
 int main(){
     sf::RenderWindow window(sf::VideoMode(1280, 800), "Checkers!");
@@ -224,16 +304,25 @@ int main(){
     CheckersArranger arranger(checkboard);
     arranger.arrange(3,3);
 
+    checkboard.drawer.setPosition(sf::Vector2i(100,100));
+    checkboard.drawer.setImageSize(700,700);
 
+    GridPositioner gp(checkboard.drawer);
 
-    checkboard.drawer.setImageSize(750,750);
     while (window.isOpen()){
         sf::Event event;
         while (window.pollEvent(event)){
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+            auto pos = gp.getCellUnder(sf::Mouse::getPosition(window));
+            if(pos.x != -1 && pos.y != -1){
+                checkboard.removeChecker(pos.x,pos.y);
+            }
+        }
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
+            checkboard.drawer.setImageSize(500,500);
 
         window.clear(sf::Color::Yellow);
         window.draw(checkboard.drawer);
