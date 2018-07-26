@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1532614308 source:d:\programowanie\warcaby\main.cpp
+1532615802 source:d:\programowanie\warcaby\main.cpp
 	<SFML/Graphics.hpp>
 	<iostream>
 	<vector>
@@ -457,7 +457,7 @@
 	<cassert>
 	<iostream>
 
-1532612369 d:\programowanie\warcaby\headers\movecontroller.h
+1532615606 d:\programowanie\warcaby\headers\movecontroller.h
 	"Checker.h"
 	"Checkboard.h"
 	"basics.h"
@@ -465,7 +465,7 @@
 1532612475 d:\programowanie\warcaby\headers\basics.h
 	<SFML/System.hpp>
 
-1532613200 source:d:\programowanie\warcaby\movecontroller.cpp
+1532615868 source:d:\programowanie\warcaby\movecontroller.cpp
 	"MoveController.h"
 	<iostream>
 
@@ -477,7 +477,7 @@
 	<cassert>
 	<iostream>
 
-1532614347 d:\programowanie\warcaby\headers\mousehandler.h
+1532614651 d:\programowanie\warcaby\headers\mousehandler.h
 	<vector>
 	<SFML/Graphics.hpp>
 

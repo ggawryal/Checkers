@@ -48,7 +48,9 @@ public:
 class Player{
     bool color = true;
     public:
-        virtual void processTurn() = 0;
+        virtual void onBeginOfTurn() = 0;
+        virtual void onTurn() = 0;
+        virtual void onEndOfTurn() = 0;
         bool playsWhite(){
             return color;
         }
@@ -68,22 +70,22 @@ public:
     HumanPlayer(sf::RenderWindow& rw, GridPositioner& gd, MoveController& mv) :gridPositioner(gd), window(rw), moveController(mv) {}
     virtual ~HumanPlayer(){}
 
-    virtual void processTurn() override{
+    virtual void onBeginOfTurn() {}
+    virtual void onEndOfTurn() {}
+
+
+    virtual void onTurn() override{
         if(gridPositioner.getCellUnder(MouseHandler::instance().getCurrentMousePosition()) != sf::Vector2i(-1,-1)){
             if(MouseHandler::instance().getButton() == sf::Mouse::Left){
                 if(currentPawn == sf::Vector2i(-1,-1)){
                     auto cell = gridPositioner.getCellUnder(sf::Mouse::getPosition(window));
-                    Checker ch = moveController.getChecker(cell.x,cell.y);
-                    if(playsWhite()){
-                        if(ch == Checker::white_pawn || ch == Checker::white_queen){
-                            currentPawn = cell;
-                        }
-                    }
+                    if(isMyChecker(playsWhite(), moveController.getChecker(cell.x,cell.y)))
+                        currentPawn = cell;
                 }
                 else{
                     auto cell = gridPositioner.getCellUnder(sf::Mouse::getPosition(window));
                     Quad q = Quad(currentPawn,cell);
-                    if(moveController.isSimpleMovingUp(q)){
+                    if(moveController.isSimpleMoving(q)){
                        moveController.move(currentPawn.x,currentPawn.y,cell.x,cell.y);
                        currentPawn = sf::Vector2i(-1,-1);
                     }
@@ -116,9 +118,17 @@ int main(){
     GridPositioner gp(checkboard.drawer);
 
     MoveController mv(checkboard);
-    HumanPlayer player(window,gp,mv);
+
+    vector<Player*> player;
+    player.push_back(new HumanPlayer(window,gp,mv));
+    player.push_back(new HumanPlayer(window,gp,mv));
+
+    player[0]->setColor(true);
+    player[1]->setColor(false);
+    int currentPlayerId = 0;
 
     while (window.isOpen()){
+        cout<<currentPlayerId<<endl;
         sf::Event event;
         while (window.pollEvent(event)){
             if (event.type == sf::Event::Closed)
@@ -126,14 +136,18 @@ int main(){
             MouseHandler::instance().handle(event);
         }
 
-        player.processTurn();
-      //  if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
-       //     checkboard.drawer.setImageSize(500,500);
+        if(mv.isBlackOnTurn() != currentPlayerId){
+            player[currentPlayerId]->onEndOfTurn();
+            currentPlayerId ^= 1;
+            player[currentPlayerId]->onBeginOfTurn();
+        }
+        player[currentPlayerId]->onTurn();
 
         window.clear(sf::Color::Yellow);
         window.draw(checkboard.drawer);
         window.display();
     }
-
+    for(auto &a:player)
+        delete a;
     return 0;
 }
