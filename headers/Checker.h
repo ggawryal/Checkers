@@ -26,5 +26,15 @@ inline  bool isEnemyChecker(const bool amIwhite, const Checker& checker){
         return isWhite(checker);
 }
 
+inline bool isQueen(const Checker& checker){
+    if(checker == white_queen || checker == black_queen)
+        return true;
+    return false;
+}
 
+inline bool isPawn(const Checker& checker){
+    if(checker == white_pawn || checker == black_pawn)
+        return true;
+    return false;
+}
 #endif // CHECKER_H

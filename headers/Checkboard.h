@@ -135,7 +135,7 @@ class Checkboard{
     std::vector<std::vector<Checker> > board;
 public:
     CheckBoardDrawer drawer;
-    int setSize(int x,int y){
+    void setSize(int x,int y){
         board.clear();
         board.resize(x,std::vector<Checker>(y));
         drawer.fixSprites();

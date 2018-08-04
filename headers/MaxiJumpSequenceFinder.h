@@ -3,7 +3,9 @@
 
 #include <iostream>
 #include <vector>
+#include <SFML/System.hpp>
 #include <map>
+#include <cassert>
 #include "Checker.h"
 
 class MaxiJumpSequenceFinder{
@@ -74,9 +76,27 @@ public:
         }
         board[x][y] = prevChecker;
         return res;
-
     }
 
+    void calculateForWholeBoard(std::vector<std::vector<Checker> > b, bool white){
+        whiteOnTurn = white;
+        reset();
+        loadBoard(b);
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(isMyChecker(whiteOnTurn, board[i][j]))
+                    solve(i,j,isPawn(board[i][j]));
+            }
+        }
+    }
+
+    int getMaxiSequenceAfter(int x,int y,bool pawn,std::vector<sf::Vector2i> removedPawns){
+        PawnState state = PawnState(x,y,0,pawn);
+        for(int i=0;i<removedPawns.size();i++)
+            state.pawnMask |= (1<<pawnPositionToId[removedPawns[i].x][removedPawns[i].y]);
+        assert(dp.count(state) > 0);
+        return dp[state];
+    }
 
 
 };

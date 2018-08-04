@@ -423,13 +423,15 @@
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Window/GlResource.hpp>
 
-1533404451 d:\programowanie\warcaby\headers\maxijumpsequencefinder.h
+1533405125 d:\programowanie\warcaby\headers\maxijumpsequencefinder.h
 	<iostream>
 	<vector>
+	<SFML/System.hpp>
 	<map>
+	<cassert>
 	"Checker.h"
 
-1532424306 source:d:\programowanie\warcaby\maxijumpsequencefinder.cpp
+1533404458 source:d:\programowanie\warcaby\maxijumpsequencefinder.cpp
 	"MaxiJumpSequenceFinder.h"
 
 1532516446 source:d:\programowanie\warcaby\texturemanager.cpp
@@ -450,7 +452,7 @@
 1532526704 d:\programowanie\warcaby\headers\player.h
 	"Grid.h"
 
-1533403494 d:\programowanie\warcaby\headers\checker.h
+1533405204 d:\programowanie\warcaby\headers\checker.h
 
 1532612549 d:\programowanie\warcaby\include\checkboard.h
 	<SFML/Graphics.hpp>
@@ -460,7 +462,7 @@
 	<cassert>
 	<iostream>
 
-1533403320 d:\programowanie\warcaby\headers\movecontroller.h
+1533404900 d:\programowanie\warcaby\headers\movecontroller.h
 	"Checker.h"
 	"Checkboard.h"
 	"basics.h"
@@ -472,7 +474,7 @@
 	"MoveController.h"
 	<iostream>
 
-1533403320 d:\programowanie\warcaby\headers\checkboard.h
+1533404914 d:\programowanie\warcaby\headers\checkboard.h
 	<SFML/Graphics.hpp>
 	"TextureManager.h"
 	"Grid.h"

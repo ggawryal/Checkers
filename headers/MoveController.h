@@ -108,6 +108,7 @@ public:
         if(checker == Checker::white_queen || checker == Checker::black_queen){
             return isCorrectQueenMove(x1,y1,x2,y2);
         }
+        throw NotImplementedException();
     }
     virtual bool isCorrectMove(Quad q) {return isCorrectMove(q.x1,q.y1,q.x2,q.y2);}
     virtual ~Rules(){}
