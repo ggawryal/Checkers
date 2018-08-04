@@ -57,10 +57,7 @@ public:
 
 
 
-    void move(int x1,int y1,int x2,int y2){
-        checkboard.moveChecker(x1,y1,x2,y2);
-        whiteOnTurn ^= 1;
-    }
+    void move(int x1,int y1,int x2,int y2);
 };
 
 

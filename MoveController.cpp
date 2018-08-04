@@ -83,3 +83,17 @@ bool MoveController::isLongMoving(int x1,int y1,int x2,int y2){
 
     return true;
 }
+
+void MoveController::move(int x1,int y1,int x2,int y2){
+    checkboard.moveChecker(x1,y1,x2,y2);
+    sf::Vector2i step = sf::Vector2i((x2-x1) / abs(x2-x1), (y2-y1) / abs(y2-y1));
+
+    while(x1 != x2 && y1 != y2){
+        if(checkboard.getChecker(x1,y1) != Checker::empty)
+            checkboard.deleteChecker(x1,y1);
+        x1 += step.x;
+        y1 += step.y;
+    }
+
+    whiteOnTurn ^= 1;
+}

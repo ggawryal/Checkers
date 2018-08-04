@@ -127,7 +127,7 @@ int main(){
     int currentPlayerId = 0;
 
     while (window.isOpen()){
-        cout<<currentPlayerId<<endl;
+        //cout<<currentPlayerId<<endl;
         sf::Event event;
         while (window.pollEvent(event)){
             if (event.type == sf::Event::Closed)
