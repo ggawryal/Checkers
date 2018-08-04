@@ -56,4 +56,44 @@ public:
     }
 };
 
+
+class Rules{
+public:
+    MoveController & moveController;
+    Rules(MoveController& mv) : moveController(mv) {}
+
+    virtual bool isCorrectWhitePawnMove(int x1, int y1,int x2, int y2) = 0;
+    virtual bool isCorrectWhitePawnMove(Quad q) {return isCorrectWhitePawnMove(q.x1,q.y1,q.x2,q.y2);}
+
+    virtual bool isCorrectBlackPawnMove(int x1, int y1,int x2, int y2) = 0;
+    virtual bool isCorrectBlackPawnMove(Quad q) {return  isCorrectBlackPawnMove(q.x1,q.y1,q.x2,q.y2);}
+
+    virtual bool isCorrectQueenMove(int x1, int y1,int x2, int y2) = 0;
+    virtual bool isCorrectQueenMove(Quad q) {return isCorrectBlackPawnMove(q.x1,q.y1,q.x2,q.y2);}
+    virtual ~Rules(){}
+};
+
+class ClassicRules : public Rules{
+public:
+    ClassicRules(MoveController& mv) : Rules(mv) {}
+
+    virtual bool isCorrectWhitePawnMove(int x1,int y1,int x2,int y2) override{
+        if(moveController.isSimpleMovingUp(x1,y1,x2,y2) || moveController.isSimpleJumping(x1,y1,x2,y2))
+            return true;
+        return false;
+    }
+
+    virtual bool isCorrectBlackPawnMove(int x1,int y1,int x2,int y2) override{
+        if(moveController.isSimpleMovingDown(x1,y1,x2,y2) || moveController.isSimpleJumping(x1,y1,x2,y2))
+            return true;
+        return false;
+    }
+
+    virtual bool isCorrectQueenMove(int x1, int y1,int x2, int y2) override{
+        throw NotImplementedException();
+    }
+
+
+};
+
 #endif // MOVECONTROLLER_H

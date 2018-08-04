@@ -1,6 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
+#include <memory>
+#include <functional>
 #include <cassert>
 #include "Checker.h"
 #include "MaxiJumpSequenceFinder.h"
@@ -10,11 +12,6 @@
 #include "MoveController.h"
 #include "MouseHandler.h"
 using namespace std;
-
-struct NotImplementedException : public std::logic_error{
-    NotImplementedException() : std::logic_error("Function not yet implemented") { };
-};
-
 
 
 class CheckersArranger{
@@ -118,10 +115,11 @@ int main(){
     GridPositioner gp(checkboard.drawer);
 
     MoveController mv(checkboard);
+    unique_ptr<Rules> rules(new ClassicRules(mv));
 
-    vector<Player*> player;
-    player.push_back(new HumanPlayer(window,gp,mv));
-    player.push_back(new HumanPlayer(window,gp,mv));
+    vector<unique_ptr<Player> > player;
+    player.push_back(unique_ptr<Player>(new HumanPlayer(window,gp,mv)));
+    player.push_back(unique_ptr<Player>(new HumanPlayer(window,gp,mv)));
 
     player[0]->setColor(true);
     player[1]->setColor(false);
@@ -147,7 +145,5 @@ int main(){
         window.draw(checkboard.drawer);
         window.display();
     }
-    for(auto &a:player)
-        delete a;
     return 0;
 }

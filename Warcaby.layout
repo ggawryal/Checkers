@@ -2,6 +2,59 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
+	<File name="MaxiJumpSequenceFinder.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="281" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="headers\MoveController.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1056" topLine="22" />
+		</Cursor>
+	</File>
+	<File name="main.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2306" topLine="52" />
+		</Cursor>
+		<Folding>
+			<Collapse line="13" />
+		</Folding>
+	</File>
+	<File name="headers\Grid.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="439" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="headers\TextureManager.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="630" topLine="9" />
+		</Cursor>
+	</File>
+	<File name="MoveController.cpp" open="1" top="1" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="444" topLine="32" />
+		</Cursor>
+	</File>
+	<File name="headers\Checker.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="609" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="headers\MouseHandler.h" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1192" topLine="8" />
+		</Cursor>
+	</File>
+	<File name="headers\basics.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="247" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="headers\Checkboard.h" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="211" topLine="0" />
+		</Cursor>
+	</File>
 	<File name="headers\MaxiJumpSequenceFinder.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="2107" topLine="0" />
@@ -13,44 +66,6 @@
 			<Collapse line="40" />
 			<Collapse line="49" />
 			<Collapse line="57" />
-		</Folding>
-	</File>
-	<File name="main.cpp" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="8492" topLine="32" />
-		</Cursor>
-		<Folding>
-			<Collapse line="9" />
-			<Collapse line="15" />
-			<Collapse line="20" />
-			<Collapse line="143" />
-			<Collapse line="149" />
-			<Collapse line="152" />
-			<Collapse line="155" />
-			<Collapse line="162" />
-			<Collapse line="179" />
-			<Collapse line="191" />
-			<Collapse line="207" />
-			<Collapse line="240" />
-			<Collapse line="278" />
-		</Folding>
-	</File>
-	<File name="headers\Grid.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="439" topLine="2" />
-		</Cursor>
-	</File>
-	<File name="headers\TextureManager.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="683" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="MaxiJumpSequenceFinder.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="281" topLine="0" />
-		</Cursor>
-		<Folding>
-			<Collapse line="28" />
 		</Folding>
 	</File>
 </CodeBlocks_layout_file>
