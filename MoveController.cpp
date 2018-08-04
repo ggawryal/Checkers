@@ -102,7 +102,7 @@ bool MoveController::isLongJumping(int x1,int y1,int x2,int y2){
         y1 += step.y;
         Checker checker = checkboard.getChecker(x1,y1);
 
-        if(isMyChecker(whiteOnTurn,checker))
+        if(isMyChecker(whiteOnTurn,checker) || checker == Checker::jumped_over)
             return false;
 
         if(isEnemyChecker(whiteOnTurn,checker))

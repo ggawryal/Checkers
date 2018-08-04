@@ -1,7 +1,7 @@
 #ifndef CHECKER_H
 #define CHECKER_H
 
-enum Checker {empty = 0, white_pawn = 1, white_queen = 2, black_pawn = 3, black_queen = 4};
+enum Checker {empty = 0, white_pawn = 1, white_queen = 2, black_pawn = 3, black_queen = 4, jumped_over = 5};
 
 inline bool isWhite(const Checker& checker){
     if(checker == white_pawn || checker == white_queen)
