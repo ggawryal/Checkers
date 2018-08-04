@@ -70,6 +70,17 @@ public:
 
     virtual bool isCorrectQueenMove(int x1, int y1,int x2, int y2) = 0;
     virtual bool isCorrectQueenMove(Quad q) {return isCorrectBlackPawnMove(q.x1,q.y1,q.x2,q.y2);}
+
+    virtual bool isCorrectPawnMove(bool isWhite,int x1, int y1,int x2, int y2){
+        if(isWhite)
+            return isCorrectWhitePawnMove(x1,y1,x2,y2);
+        return isCorrectBlackPawnMove(x1,y1,x2,y2);
+    }
+    virtual bool isCorrectPawnMove(bool isWhite,Quad q){
+        if(isWhite)
+            return isCorrectWhitePawnMove(q);
+        return isCorrectBlackPawnMove(q);
+    }
     virtual ~Rules(){}
 };
 

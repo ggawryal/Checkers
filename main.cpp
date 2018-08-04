@@ -61,10 +61,11 @@ class Player{
 class HumanPlayer : public Player{
     GridPositioner& gridPositioner;
     MoveController& moveController;
+    shared_ptr<Rules> rules;
     sf::RenderWindow& window;
     sf::Vector2i currentPawn = sf::Vector2i(-1,-1);
 public:
-    HumanPlayer(sf::RenderWindow& rw, GridPositioner& gd, MoveController& mv) :gridPositioner(gd), window(rw), moveController(mv) {}
+    HumanPlayer(sf::RenderWindow& rw, GridPositioner& gd, MoveController& mv,shared_ptr<Rules> rul) :gridPositioner(gd), window(rw), moveController(mv) {rules = rul;}
     virtual ~HumanPlayer(){}
 
     virtual void onBeginOfTurn() {}
@@ -82,7 +83,7 @@ public:
                 else{
                     auto cell = gridPositioner.getCellUnder(sf::Mouse::getPosition(window));
                     Quad q = Quad(currentPawn,cell);
-                    if(moveController.isSimpleMoving(q)){
+                    if(rules->isCorrectPawnMove(playsWhite(),q)){
                        moveController.move(currentPawn.x,currentPawn.y,cell.x,cell.y);
                        currentPawn = sf::Vector2i(-1,-1);
                     }
@@ -115,11 +116,11 @@ int main(){
     GridPositioner gp(checkboard.drawer);
 
     MoveController mv(checkboard);
-    unique_ptr<Rules> rules(new ClassicRules(mv));
+    shared_ptr<Rules> rules(new ClassicRules(mv));
 
     vector<unique_ptr<Player> > player;
-    player.push_back(unique_ptr<Player>(new HumanPlayer(window,gp,mv)));
-    player.push_back(unique_ptr<Player>(new HumanPlayer(window,gp,mv)));
+    player.push_back(unique_ptr<Player>(new HumanPlayer(window,gp,mv,rules)));
+    player.push_back(unique_ptr<Player>(new HumanPlayer(window,gp,mv,rules)));
 
     player[0]->setColor(true);
     player[1]->setColor(false);
@@ -145,5 +146,6 @@ int main(){
         window.draw(checkboard.drawer);
         window.display();
     }
+
     return 0;
 }
