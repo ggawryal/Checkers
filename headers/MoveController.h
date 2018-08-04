@@ -55,6 +55,10 @@ public:
         return isLongMoving(quad.x1, quad.y1, quad.x2, quad.y2);
     }
 
+    bool isLongJumping(int x1,int y1,int x2,int y2);
+    bool isLongJumping(Quad quad){
+        return isLongJumping(quad.x1, quad.y1, quad.x2, quad.y2);
+    }
 
 
     void move(int x1,int y1,int x2,int y2);
@@ -126,7 +130,7 @@ public:
     }
 
     virtual bool isCorrectQueenMove(int x1, int y1,int x2, int y2) override{
-        if(moveController.isLongMoving(x1,y1,x2,y2))
+        if(moveController.isLongMoving(x1,y1,x2,y2) || moveController.isLongJumping(x1,y1,x2,y2))
             return true;
         return false;
         //throw NotImplementedException();
