@@ -8,7 +8,7 @@ class MoveController{
     bool whiteOnTurn = true;
     Checkboard& checkboard;
 public:
-    bool isWwhiteOnTurn(){
+    bool isWhiteOnTurn(){
         return whiteOnTurn;
     }
     bool isBlackOnTurn(){
@@ -50,6 +50,13 @@ public:
         return isSimpleJumping(quad.x1,quad.y1,quad.x2,quad.y2);
     }
 
+    bool isLongMoving(int x1,int y1,int x2,int y2);
+    bool isLongMoving(Quad quad){
+        return isLongMoving(quad.x1, quad.y1, quad.x2, quad.y2);
+    }
+
+
+
     void move(int x1,int y1,int x2,int y2){
         checkboard.moveChecker(x1,y1,x2,y2);
         whiteOnTurn ^= 1;
@@ -81,6 +88,27 @@ public:
             return isCorrectWhitePawnMove(q);
         return isCorrectBlackPawnMove(q);
     }
+    virtual bool isCorrectMove(int x1,int y1,int x2,int y2){
+        Checker checker = moveController.getChecker(x1,y1);
+        if(checker == Checker::empty){
+            std::cout<<"Warning: Trying to check correctness of empty checker"<<std::endl;
+            return false;
+        }
+        if(checker == Checker::black_pawn){
+            if(moveController.isWhiteOnTurn() == true)
+                std::cout<<"Warning: Trying to check correctness of black pawn move while current player is white"<<std::endl;
+            return isCorrectBlackPawnMove(x1,y1,x2,y2);
+        }
+        if(checker == Checker::white_pawn){
+            if(moveController.isBlackOnTurn() == true)
+                std::cout<<"Warning: Trying to check correctness of white pawn move while current player is black"<<std::endl;
+            return isCorrectWhitePawnMove(x1,y1,x2,y2);
+        }
+        if(checker == Checker::white_queen || checker == Checker::black_queen){
+            return isCorrectQueenMove(x1,y1,x2,y2);
+        }
+    }
+    virtual bool isCorrectMove(Quad q) {return isCorrectMove(q.x1,q.y1,q.x2,q.y2);}
     virtual ~Rules(){}
 };
 
@@ -101,8 +129,12 @@ public:
     }
 
     virtual bool isCorrectQueenMove(int x1, int y1,int x2, int y2) override{
-        throw NotImplementedException();
+        if(moveController.isLongMoving(x1,y1,x2,y2))
+            return true;
+        return false;
+        //throw NotImplementedException();
     }
+
 
 
 };

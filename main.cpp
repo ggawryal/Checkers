@@ -22,7 +22,7 @@ public:
     void arrange(int heightBlack, int heightWite, bool blackUpper = true){
         assert(heightBlack + heightWite <= checkboard.getHeight());
 
-        Checker upper_pawn = black_pawn;
+        Checker upper_pawn = black_queen;
         Checker lower_pawn = white_pawn;
 
         if(blackUpper == false){
@@ -83,7 +83,7 @@ public:
                 else{
                     auto cell = gridPositioner.getCellUnder(sf::Mouse::getPosition(window));
                     Quad q = Quad(currentPawn,cell);
-                    if(rules->isCorrectPawnMove(playsWhite(),q)){
+                    if(rules->isCorrectMove(q)){
                        moveController.move(currentPawn.x,currentPawn.y,cell.x,cell.y);
                        currentPawn = sf::Vector2i(-1,-1);
                     }
