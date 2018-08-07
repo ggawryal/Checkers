@@ -116,15 +116,21 @@ bool MoveController::isLongJumping(int x1,int y1,int x2,int y2){
 
 
 void MoveController::move(int x1,int y1,int x2,int y2){
+    if(jumpingCheckerStartPos == sf::Vector2i(-1,-1))
+        jumpingCheckerStartPos = sf::Vector2i(x1,y1);
     checkboard.moveChecker(x1,y1,x2,y2);
     sf::Vector2i step = sf::Vector2i((x2-x1) / abs(x2-x1), (y2-y1) / abs(y2-y1));
 
     while(x1 != x2 && y1 != y2){
         if(checkboard.getChecker(x1,y1) != Checker::empty)
-            checkboard.deleteChecker(x1,y1);
+            checkboard.markPawnAsJumpedOver(x1,y1);
         x1 += step.x;
         y1 += step.y;
     }
+    std::cout<<"test "<<checkboard.jumpedOverCheckers.size()<<" "<< mjsf.getMaxiSequenceAfter(x2,y2,jumpingCheckerStartPos.x,jumpingCheckerStartPos.y,isPawn(checkboard.getChecker(x2,y2)),checkboard.jumpedOverCheckers);
+    std::cout<<"|+|"<<x2<<" "<<y2<<" "<<jumpingCheckerStartPos.x<<" "<<jumpingCheckerStartPos.y<<isPawn(checkboard.getChecker(x2,y2))<<std::endl;
+    if(checkboard.jumpedOverCheckers.size() == 0 ||
+       mjsf.getMaxiSequenceAfter(x2,y2,jumpingCheckerStartPos.x,jumpingCheckerStartPos.y,isPawn(checkboard.getChecker(x2,y2)),checkboard.jumpedOverCheckers) == 0)
+        nextTurn();
 
-    whiteOnTurn ^= 1;
 }

@@ -1,13 +1,21 @@
 #ifndef MOVECONTROLLER_H
 #define MOVECONTROLLER_H
+
+#include <SFML/System.hpp>
 #include "Checker.h"
 #include "Checkboard.h"
 #include "basics.h"
+#include "MaxiJumpSequenceFinder.h"
 
 class MoveController{
     bool whiteOnTurn = true;
     Checkboard& checkboard;
+    MaxiJumpSequenceFinder mjsf;
+    sf::Vector2i jumpingCheckerStartPos;
 public:
+    int countOfJumpedOverCheckers(){
+        return checkboard.jumpedOverCheckers.size();
+    }
     bool isWhiteOnTurn(){
         return whiteOnTurn;
     }
@@ -15,7 +23,10 @@ public:
         return !whiteOnTurn;
     }
 
-    MoveController(Checkboard&c) : checkboard(c){}
+    MoveController(Checkboard&c) : checkboard(c){
+        mjsf.calculateForWholeBoard(checkboard.getBoard(),whiteOnTurn);
+        jumpingCheckerStartPos = sf::Vector2i(-1,-1);
+    }
     Checker getChecker(int x,int y){
         return checkboard.getChecker(x,y);
     }
@@ -59,7 +70,12 @@ public:
     bool isLongJumping(Quad quad){
         return isLongJumping(quad.x1, quad.y1, quad.x2, quad.y2);
     }
-
+    void nextTurn(){
+        jumpingCheckerStartPos = sf::Vector2i(-1,-1);
+        checkboard.deleteAllMarkedAsJumpedOverCheckers();
+        whiteOnTurn ^= 1;
+        mjsf.calculateForWholeBoard(checkboard.getBoard(),whiteOnTurn);
+    }
 
     void move(int x1,int y1,int x2,int y2);
 };
@@ -69,6 +85,7 @@ class Rules{
 public:
     MoveController & moveController;
     Rules(MoveController& mv) : moveController(mv) {}
+
 
     virtual bool isCorrectWhitePawnMove(int x1, int y1,int x2, int y2) = 0;
     virtual bool isCorrectWhitePawnMove(Quad q) {return isCorrectWhitePawnMove(q.x1,q.y1,q.x2,q.y2);}
@@ -119,19 +136,25 @@ public:
     ClassicRules(MoveController& mv) : Rules(mv) {}
 
     virtual bool isCorrectWhitePawnMove(int x1,int y1,int x2,int y2) override{
-        if(moveController.isSimpleMovingUp(x1,y1,x2,y2) || moveController.isSimpleJumping(x1,y1,x2,y2))
+        if(moveController.isSimpleMoving(x1,y1,x2,y2) && moveController.countOfJumpedOverCheckers() == 0)
+            return true;
+        if(moveController.isSimpleJumping(x1,y1,x2,y2))
             return true;
         return false;
     }
 
     virtual bool isCorrectBlackPawnMove(int x1,int y1,int x2,int y2) override{
-        if(moveController.isSimpleMovingDown(x1,y1,x2,y2) || moveController.isSimpleJumping(x1,y1,x2,y2))
+        if(moveController.isSimpleMovingDown(x1,y1,x2,y2) && moveController.countOfJumpedOverCheckers() == 0)
+            return true;
+        if(moveController.isSimpleJumping(x1,y1,x2,y2))
             return true;
         return false;
     }
 
     virtual bool isCorrectQueenMove(int x1, int y1,int x2, int y2) override{
-        if(moveController.isLongMoving(x1,y1,x2,y2) || moveController.isLongJumping(x1,y1,x2,y2))
+        if(moveController.isLongMoving(x1,y1,x2,y2) && moveController.countOfJumpedOverCheckers() == 0)
+            return true;
+        if(moveController.isLongJumping(x1,y1,x2,y2))
             return true;
         return false;
         //throw NotImplementedException();

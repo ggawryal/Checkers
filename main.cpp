@@ -22,7 +22,7 @@ public:
     void arrange(int heightBlack, int heightWite, bool blackUpper = true){
         assert(heightBlack + heightWite <= checkboard.getHeight());
 
-        Checker upper_pawn = black_pawn;
+        Checker upper_pawn = black_queen;
         Checker lower_pawn = white_pawn;
 
         if(blackUpper == false){
@@ -69,7 +69,9 @@ public:
     virtual ~HumanPlayer(){}
 
     virtual void onBeginOfTurn() {}
-    virtual void onEndOfTurn() {}
+    virtual void onEndOfTurn() {
+        currentPawn = sf::Vector2i(-1,-1);
+    }
 
 
     virtual void onTurn() override{
@@ -85,7 +87,6 @@ public:
                     Quad q = Quad(currentPawn,cell);
                     if(rules->isCorrectMove(q)){
                        moveController.move(currentPawn.x,currentPawn.y,cell.x,cell.y);
-                       currentPawn = sf::Vector2i(-1,-1);
                     }
                 }
             }
@@ -116,7 +117,6 @@ int main(){
     GridPositioner gp(checkboard.drawer);
 
     MoveController mv(checkboard);
-    MaxiJumpSequenceFinder mjsf;
 
     shared_ptr<Rules> rules(new ClassicRules(mv));
 
@@ -129,7 +129,7 @@ int main(){
     int currentPlayerId = 0;
 
     while (window.isOpen()){
-        //cout<<currentPlayerId<<endl;
+
         sf::Event event;
         while (window.pollEvent(event)){
             if (event.type == sf::Event::Closed)
@@ -141,18 +141,7 @@ int main(){
             player[currentPlayerId]->onEndOfTurn();
             currentPlayerId ^= 1;
             player[currentPlayerId]->onBeginOfTurn();
-
-            mjsf.calculateForWholeBoard(checkboard.getBoard(),currentPlayerId^1);
-            cout<<"I am white = "<<(currentPlayerId^1)<<endl;
-           for(int i=0;i<checkboard.getHeight();i++){
-                for(int j=0;j<checkboard.getWidth();j++){
-                    if(isMyChecker(currentPlayerId^1,checkboard.getChecker(j,i)))
-                        cout<<mjsf.getMaxiSequenceAfter(i,j,isPawn(checkboard.getChecker(j,i)),{})<<" ";
-                    else
-                        cout<<"-"<<" ";
-                }
-                cout<<endl;
-            }
+            cout<<currentPlayerId<<endl;
         }
         player[currentPlayerId]->onTurn();
 

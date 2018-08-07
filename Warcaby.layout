@@ -2,24 +2,49 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
+	<File name="MaxiJumpSequenceFinder.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1350" topLine="27" />
+		</Cursor>
+	</File>
+	<File name="headers\Checker.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="914" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="main.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3000" topLine="69" />
+		</Cursor>
+	</File>
 	<File name="headers\MouseHandler.h" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1192" topLine="8" />
+			<Cursor1 position="1192" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="headers\MaxiJumpSequenceFinder.h" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4413" topLine="109" />
+		</Cursor>
+	</File>
+	<File name="headers\Grid.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="439" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="headers\MoveController.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="4032" topLine="61" />
+			<Cursor1 position="345" topLine="116" />
 		</Cursor>
 		<Folding>
-			<Collapse line="23" />
-			<Collapse line="28" />
-			<Collapse line="33" />
-			<Collapse line="38" />
-			<Collapse line="43" />
-			<Collapse line="48" />
-			<Collapse line="53" />
-			<Collapse line="58" />
+			<Collapse line="34" />
+			<Collapse line="39" />
+			<Collapse line="44" />
+			<Collapse line="49" />
+			<Collapse line="54" />
+			<Collapse line="59" />
+			<Collapse line="64" />
+			<Collapse line="69" />
 		</Folding>
 	</File>
 	<File name="headers\TextureManager.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -27,23 +52,9 @@
 			<Cursor1 position="630" topLine="9" />
 		</Cursor>
 	</File>
-	<File name="main.cpp" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="MoveController.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="5078" topLine="126" />
-		</Cursor>
-	</File>
-	<File name="headers\MaxiJumpSequenceFinder.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3533" topLine="79" />
-		</Cursor>
-		<Folding>
-			<Collapse line="49" />
-			<Collapse line="52" />
-		</Folding>
-	</File>
-	<File name="headers\Checker.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="914" topLine="0" />
+			<Cursor1 position="4871" topLine="105" />
 		</Cursor>
 	</File>
 	<File name="headers\basics.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -51,24 +62,9 @@
 			<Cursor1 position="411" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="headers\Grid.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="439" topLine="2" />
-		</Cursor>
-	</File>
 	<File name="headers\Checkboard.h" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="5500" topLine="130" />
-		</Cursor>
-	</File>
-	<File name="MaxiJumpSequenceFinder.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1841" topLine="15" />
-		</Cursor>
-	</File>
-	<File name="MoveController.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2987" topLine="84" />
+			<Cursor1 position="7220" topLine="120" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

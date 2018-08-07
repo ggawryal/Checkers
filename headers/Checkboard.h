@@ -134,6 +134,7 @@ public:
 class Checkboard{
     std::vector<std::vector<Checker> > board;
 public:
+    std::vector<sf::Vector2i> jumpedOverCheckers;
     CheckBoardDrawer drawer;
     void setSize(int x,int y){
         board.clear();
@@ -188,6 +189,25 @@ public:
             drawer.removeChecker(x,y);
         }
     }
+    void markPawnAsJumpedOver(int x,int y){
+        assert(x < board.size());
+        assert(board.size() > 0);
+        assert(y < board[0].size());
+
+        if(board[x][y] == Checker::empty)
+            std::cout<<"Warning: trying to mark checker from cell "<<x<<" "<<y<<" which is already empty"<<std::endl;
+        else{
+            board[x][y] = Checker::jumped_over;
+            jumpedOverCheckers.push_back(sf::Vector2i(x,y));
+        }
+    }
+
+    void deleteAllMarkedAsJumpedOverCheckers(){
+        for(auto checkerPos: jumpedOverCheckers)
+            deleteChecker(checkerPos.x,checkerPos.y);
+        jumpedOverCheckers.clear();
+    }
+
     void moveChecker(int x,int y,int x2,int y2){
         assert(board.size() > 0);
         assert(x < board.size());

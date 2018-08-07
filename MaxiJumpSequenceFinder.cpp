@@ -4,7 +4,7 @@ void MaxiJumpSequenceFinder::solvePawn(PawnState state){
     if(dp.count(state) > 0)
         return;
     dp[state] = 0;
-    std::cout<<"visited "<< state.x<<" "<<state.y<<" "<<state.sx<<" "<<state.sy<<" "<<state.pawnMask<<" "<<state.amIqueen<< std::endl;
+    //std::cout<<"visited "<< state.x<<" "<<state.y<<" "<<state.sx<<" "<<state.sy<<" "<<state.pawnMask<<" "<<state.amIqueen<< std::endl;
     std::vector<std::pair<int,int> > cells = {{1,1},{-1,1},{-1,-1},{1,-1}};
     for(int i=0;i<cells.size();i++){
         int ex = cells[i].first, ey = cells[i].second;
@@ -32,7 +32,7 @@ void MaxiJumpSequenceFinder::solveQueen(PawnState state){
 
     if(dp.count(state) != 0)
         return;
-
+    std::cout<<"visited "<< state.x<<" "<<state.y<<" "<<state.sx<<" "<<state.sy<<" "<<state.pawnMask<<" "<<state.amIqueen<< std::endl;
     dp[state] = 0;
 
     std::vector<std::pair<int,int> > cells = {{1,1},{-1,1},{-1,-1},{1,-1}};

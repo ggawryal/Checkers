@@ -106,13 +106,15 @@ public:
         reset();
         loadBoard(b);
         loadPawnPosition();
-        for(int i=0;i<n;i++){
-            for(int j=0;j<m;j++){
+        for(int j=0;j<m;j++){
+            for(int i=0;i<n;i++){
                 if(isMyChecker(whiteOnTurn, board[i][j])){
-                    solve(i,j,isPawn(board[i][j]));
-                    std::cout<<"next"<<std::endl;
+                    std::cout<<solve(i,j,isPawn(board[i][j]))<<" ";
                 }
+                else
+                    std::cout<<"- ";
             }
+            std::cout<<std::endl;
         }
     }
     int getMaxiSequenceAfter(int x,int y,int sx,int sy,bool pawn,std::vector<sf::Vector2i> removedPawns){
@@ -121,7 +123,7 @@ public:
         state.sy = sx;
         for(int i=0;i<removedPawns.size();i++)
             state.pawnMask |= (1<<pawnPositionToId[removedPawns[i].y][removedPawns[i].x]);
-        //std::cout<<state.x<<" "<<state.y<<" "<<state.sx<<" "<<state.sy<<" "<<state.pawnMask<<" "<<state.amIqueen<< std::endl;
+        std::cout<<state.x<<" "<<state.y<<" "<<state.sx<<" "<<state.sy<<" "<<state.pawnMask<<" "<<state.amIqueen<< std::endl;
         if(dp.count(state) == 0)
             return 9;
       //
