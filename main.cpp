@@ -22,7 +22,7 @@ public:
     void arrange(int heightBlack, int heightWite, bool blackUpper = true){
         assert(heightBlack + heightWite <= checkboard.getHeight());
 
-        Checker upper_pawn = black_queen;
+        Checker upper_pawn = black_pawn;
         Checker lower_pawn = white_pawn;
 
         if(blackUpper == false){
@@ -116,6 +116,8 @@ int main(){
     GridPositioner gp(checkboard.drawer);
 
     MoveController mv(checkboard);
+    MaxiJumpSequenceFinder mjsf;
+
     shared_ptr<Rules> rules(new ClassicRules(mv));
 
     vector<unique_ptr<Player> > player;
@@ -139,6 +141,18 @@ int main(){
             player[currentPlayerId]->onEndOfTurn();
             currentPlayerId ^= 1;
             player[currentPlayerId]->onBeginOfTurn();
+
+            mjsf.calculateForWholeBoard(checkboard.getBoard(),currentPlayerId^1);
+            cout<<"I am white = "<<(currentPlayerId^1)<<endl;
+           for(int i=0;i<checkboard.getHeight();i++){
+                for(int j=0;j<checkboard.getWidth();j++){
+                    if(isMyChecker(currentPlayerId^1,checkboard.getChecker(j,i)))
+                        cout<<mjsf.getMaxiSequenceAfter(i,j,isPawn(checkboard.getChecker(j,i)),{})<<" ";
+                    else
+                        cout<<"-"<<" ";
+                }
+                cout<<endl;
+            }
         }
         player[currentPlayerId]->onTurn();
 

@@ -154,6 +154,11 @@ public:
         assert(y >= 0);
         return board[x][y];
     }
+
+    std::vector<std::vector<Checker> > getBoard() const{
+        return board;
+    }
+
     void addChecker(int x,int y,Checker type){
         assert(x < board.size());
         assert(board.size() > 0);
@@ -197,6 +202,7 @@ public:
         board[x][y] = Checker::empty;
         drawer.moveChecker(x,y,x2,y2);;
     }
+
 };
 
 #endif // CHECKBOARD_H
