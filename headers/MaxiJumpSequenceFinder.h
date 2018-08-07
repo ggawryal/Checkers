@@ -7,7 +7,7 @@
 #include <map>
 #include <cassert>
 #include "Checker.h"
-
+using namespace std;
 class MaxiJumpSequenceFinder{
     int n,m;
     bool whiteOnTurn = true;
@@ -118,12 +118,14 @@ public:
         }
     }
     int getMaxiSequenceAfter(int x,int y,int sx,int sy,bool pawn,std::vector<sf::Vector2i> removedPawns){
-        PawnState state = PawnState(y,x,0,pawn^1);
-        state.sx = sy;
-        state.sy = sx;
-        for(int i=0;i<removedPawns.size();i++)
-            state.pawnMask |= (1<<pawnPositionToId[removedPawns[i].y][removedPawns[i].x]);
-        std::cout<<state.x<<" "<<state.y<<" "<<state.sx<<" "<<state.sy<<" "<<state.pawnMask<<" "<<state.amIqueen<< std::endl;
+        PawnState state = PawnState(x,y,0,pawn^1);
+        state.sx = sx;
+        state.sy = sy;
+        for(int i=0;i<removedPawns.size();i++){
+            state.pawnMask |= (1<<pawnPositionToId[removedPawns[i].x][removedPawns[i].y]);
+            std::cout<<"pptoid "<<removedPawns[i].x<<" "<<removedPawns[i].y<<" "<<pawnPositionToId[removedPawns[i].x][removedPawns[i].y]<<std::endl;
+        }
+        std::cout<<"stan szukany:  "<<state.x<<" "<<state.y<<" "<<state.sx<<" "<<state.sy<<" "<<state.pawnMask<<" "<<state.amIqueen<<" ";
         if(dp.count(state) == 0)
             return 9;
       //

@@ -105,6 +105,19 @@ public:
         checkers[pos].y = y2;
         checkers[pos].sprite.setPosition(sf::Vector2f(position.x + checkers[pos].x*cellSize.x, position.y + checkers[pos].y*cellSize.y));
     }
+
+    void markChecker(int x,int y){
+        int pos = -1;
+        for(int i=0;i<checkers.size();i++){
+            if(checkers[i].x == x && checkers[i].y == y){
+                pos = i;
+                break;
+            }
+        }
+        assert(pos != -1);
+        checkers[pos].sprite.setColor(sf::Color(100,100,100,150));
+    }
+
     void removeChecker(int x,int y){
         for(auto it=checkers.begin();it != checkers.end();it++){
             if(it->x == x && it->y == y){
@@ -199,6 +212,7 @@ public:
         else{
             board[x][y] = Checker::jumped_over;
             jumpedOverCheckers.push_back(sf::Vector2i(x,y));
+            drawer.markChecker(x,y);
         }
     }
 

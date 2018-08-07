@@ -128,7 +128,7 @@ void MoveController::move(int x1,int y1,int x2,int y2){
         y1 += step.y;
     }
     std::cout<<"test "<<checkboard.jumpedOverCheckers.size()<<" "<< mjsf.getMaxiSequenceAfter(x2,y2,jumpingCheckerStartPos.x,jumpingCheckerStartPos.y,isPawn(checkboard.getChecker(x2,y2)),checkboard.jumpedOverCheckers);
-    std::cout<<"|+|"<<x2<<" "<<y2<<" "<<jumpingCheckerStartPos.x<<" "<<jumpingCheckerStartPos.y<<isPawn(checkboard.getChecker(x2,y2))<<std::endl;
+    std::cout<<"|+|"<<x2<<" "<<y2<<" "<<jumpingCheckerStartPos.x<<" "<<jumpingCheckerStartPos.y<<" "<<isPawn(checkboard.getChecker(x2,y2))<<std::endl;
     if(checkboard.jumpedOverCheckers.size() == 0 ||
        mjsf.getMaxiSequenceAfter(x2,y2,jumpingCheckerStartPos.x,jumpingCheckerStartPos.y,isPawn(checkboard.getChecker(x2,y2)),checkboard.jumpedOverCheckers) == 0)
         nextTurn();

@@ -87,10 +87,11 @@ public:
                     Quad q = Quad(currentPawn,cell);
                     if(rules->isCorrectMove(q)){
                        moveController.move(currentPawn.x,currentPawn.y,cell.x,cell.y);
+                       currentPawn = cell;
                     }
                 }
             }
-            if(MouseHandler::instance().getButton() == sf::Mouse::Right){
+            if(MouseHandler::instance().getButton() == sf::Mouse::Right && moveController.countOfJumpedOverCheckers() == 0){
                 currentPawn = sf::Vector2i(-1,-1);
             }
 
@@ -141,11 +142,12 @@ int main(){
             player[currentPlayerId]->onEndOfTurn();
             currentPlayerId ^= 1;
             player[currentPlayerId]->onBeginOfTurn();
-            cout<<currentPlayerId<<endl;
         }
         player[currentPlayerId]->onTurn();
-
-        window.clear(sf::Color::Yellow);
+        if(currentPlayerId == 0)
+            window.clear(sf::Color(220,170,50));
+        else
+            window.clear(sf::Color(100,100,100));
         window.draw(checkboard.drawer);
         window.display();
     }
