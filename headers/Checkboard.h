@@ -189,6 +189,7 @@ public:
         }
         board[x][y] = type;
         drawer.addChecker(x,y,type);
+        drawer.fixSprites();
     }
     void deleteChecker(int x, int y){
         assert(x < board.size());

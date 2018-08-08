@@ -127,10 +127,13 @@ void MoveController::move(int x1,int y1,int x2,int y2){
         x1 += step.x;
         y1 += step.y;
     }
-    std::cout<<"test "<<checkboard.jumpedOverCheckers.size()<<" "<< mjsf.getMaxiSequenceAfter(x2,y2,jumpingCheckerStartPos.x,jumpingCheckerStartPos.y,isPawn(checkboard.getChecker(x2,y2)),checkboard.jumpedOverCheckers);
-    std::cout<<"|+|"<<x2<<" "<<y2<<" "<<jumpingCheckerStartPos.x<<" "<<jumpingCheckerStartPos.y<<" "<<isPawn(checkboard.getChecker(x2,y2))<<std::endl;
+   // std::cout<<"test "<<checkboard.jumpedOverCheckers.size()<<" "<< mjsf.getMaxiSequenceAfter(x2,y2,jumpingCheckerStartPos.x,jumpingCheckerStartPos.y,isPawn(checkboard.getChecker(x2,y2)),checkboard.jumpedOverCheckers);
+  //  std::cout<<"|+|"<<x2<<" "<<y2<<" "<<jumpingCheckerStartPos.x<<" "<<jumpingCheckerStartPos.y<<" "<<isPawn(checkboard.getChecker(x2,y2))<<std::endl;
     if(checkboard.jumpedOverCheckers.size() == 0 ||
-       mjsf.getMaxiSequenceAfter(x2,y2,jumpingCheckerStartPos.x,jumpingCheckerStartPos.y,isPawn(checkboard.getChecker(x2,y2)),checkboard.jumpedOverCheckers) == 0)
+       mjsf.getMaxiSequenceAfter(x2,y2,jumpingCheckerStartPos.x,jumpingCheckerStartPos.y,isPawn(checkboard.getChecker(x2,y2)),checkboard.jumpedOverCheckers) == 0){
+        if((whiteOnTurn && y2 == 0) || (whiteOnTurn == false && y2 == checkboard.getHeight()-1))
+            promote(x2,y2);
         nextTurn();
+    }
 
 }

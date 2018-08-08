@@ -123,12 +123,9 @@ public:
         state.sy = sy;
         for(int i=0;i<removedPawns.size();i++){
             state.pawnMask |= (1<<pawnPositionToId[removedPawns[i].x][removedPawns[i].y]);
-            std::cout<<"pptoid "<<removedPawns[i].x<<" "<<removedPawns[i].y<<" "<<pawnPositionToId[removedPawns[i].x][removedPawns[i].y]<<std::endl;
+           // std::cout<<"pptoid "<<removedPawns[i].x<<" "<<removedPawns[i].y<<" "<<pawnPositionToId[removedPawns[i].x][removedPawns[i].y]<<std::endl;
         }
-        std::cout<<"stan szukany:  "<<state.x<<" "<<state.y<<" "<<state.sx<<" "<<state.sy<<" "<<state.pawnMask<<" "<<state.amIqueen<<" ";
-        if(dp.count(state) == 0)
-            return 9;
-      //
+     //   std::cout<<"stan szukany:  "<<state.x<<" "<<state.y<<" "<<state.sx<<" "<<state.sy<<" "<<state.pawnMask<<" "<<state.amIqueen<<" ";
         assert(dp.count(state) > 0);
         return dp[state];
     }

@@ -13,6 +13,45 @@ class MoveController{
     MaxiJumpSequenceFinder mjsf;
     sf::Vector2i jumpingCheckerStartPos;
 public:
+    int getMaxiJumpingSequenceLenght(int x,int y){
+        assert(isMyChecker(whiteOnTurn,checkboard.getChecker(x,y)));
+        if(jumpingCheckerStartPos == sf::Vector2i(-1,-1))
+            return mjsf.getMaxiSequenceAfter(x,y,x,y, isPawn(checkboard.getChecker(x,y)),checkboard.jumpedOverCheckers);
+        return mjsf.getMaxiSequenceAfter(x,y,jumpingCheckerStartPos.x,jumpingCheckerStartPos.y, isPawn(checkboard.getChecker(x,y)),checkboard.jumpedOverCheckers);
+    }
+    int getMaxiJumpingSequenceLenghtAfterJump(int x1,int y1,int x2,int y2){
+        assert(isMyChecker(whiteOnTurn,checkboard.getChecker(x1,y1)));
+
+        sf::Vector2i step = sf::Vector2i((x2-x1) / std::abs(x2-x1), (y2-y1) / std::abs(y2-y1));
+
+        std::vector<sf::Vector2i> jumpedOverCheckersAfterNextJump = checkboard.jumpedOverCheckers;
+        int cx1 = x1, cy1 = y1;
+        cx1 += step.x; cy1 += step.y;
+        while(cx1 != x2 && cy1 != y2){
+            if(checkboard.getChecker(cx1,cy1) != Checker::empty){
+                jumpedOverCheckersAfterNextJump.push_back(sf::Vector2i(cx1,cy1));
+            }
+            cx1 += step.x;
+            cy1 += step.y;
+        }
+        bool pawn = isPawn(checkboard.getChecker(x1,y1));
+        if(jumpingCheckerStartPos != sf::Vector2i(-1,-1)){
+            x1 = jumpingCheckerStartPos.x;
+            y1 = jumpingCheckerStartPos.y;
+        }
+        return mjsf.getMaxiSequenceAfter(x2,y2,x1,y1, pawn,jumpedOverCheckersAfterNextJump);
+    }
+    int getMaxiJumpingSequenceLenghtFromAll(){
+        int res = 0;
+        for(int i=0;i<checkboard.getWidth();i++){
+            for(int j=0;j<checkboard.getHeight();j++)
+                if(isMyChecker(whiteOnTurn,getChecker(i,j)))
+                    res = max(res,getMaxiJumpingSequenceLenght(i,j));
+        }
+        cout<<"maxi = "<<res<<endl;
+        return res;
+    }
+
     int countOfJumpedOverCheckers(){
         return checkboard.jumpedOverCheckers.size();
     }
@@ -78,6 +117,14 @@ public:
     }
 
     void move(int x1,int y1,int x2,int y2);
+    bool promote(int x1,int y1){
+        assert(isMyChecker(whiteOnTurn,checkboard.getChecker(x1,y1)));
+        checkboard.deleteChecker(x1,y1);
+        if(whiteOnTurn)
+            checkboard.addChecker(x1,y1,Checker::white_queen);
+        else
+            checkboard.addChecker(x1,y1,Checker::black_queen);
+    }
 };
 
 
@@ -86,6 +133,9 @@ public:
     MoveController & moveController;
     Rules(MoveController& mv) : moveController(mv) {}
 
+    virtual bool existAnyCorrectMoveWith(int x1,int y1){
+        return true;
+    }
 
     virtual bool isCorrectWhitePawnMove(int x1, int y1,int x2, int y2) = 0;
     virtual bool isCorrectWhitePawnMove(Quad q) {return isCorrectWhitePawnMove(q.x1,q.y1,q.x2,q.y2);}
@@ -134,34 +184,42 @@ public:
 class ClassicRules : public Rules{
 public:
     ClassicRules(MoveController& mv) : Rules(mv) {}
+    virtual bool existAnyCorrectMoveWith(int x1,int y1) override{
+       return moveController.getMaxiJumpingSequenceLenght(x1,y1) == moveController.getMaxiJumpingSequenceLenghtFromAll();
+    }
 
     virtual bool isCorrectWhitePawnMove(int x1,int y1,int x2,int y2) override{
-        if(moveController.isSimpleMoving(x1,y1,x2,y2) && moveController.countOfJumpedOverCheckers() == 0)
-            return true;
-        if(moveController.isSimpleJumping(x1,y1,x2,y2))
+        if(moveController.countOfJumpedOverCheckers() == 0){
+            if(moveController.getMaxiJumpingSequenceLenghtFromAll() == 0 && moveController.isSimpleMovingUp(x1,y1,x2,y2))
+                return true;
+        }
+        if(moveController.isSimpleJumping(x1,y1,x2,y2) &&
+            moveController.getMaxiJumpingSequenceLenghtAfterJump(x1,y1,x2,y2) + 1 == moveController.getMaxiJumpingSequenceLenght(x1,y1))
             return true;
         return false;
     }
 
     virtual bool isCorrectBlackPawnMove(int x1,int y1,int x2,int y2) override{
-        if(moveController.isSimpleMovingDown(x1,y1,x2,y2) && moveController.countOfJumpedOverCheckers() == 0)
-            return true;
-        if(moveController.isSimpleJumping(x1,y1,x2,y2))
+        if(moveController.countOfJumpedOverCheckers() == 0){
+            if(moveController.getMaxiJumpingSequenceLenghtFromAll() == 0 && moveController.isSimpleMovingDown(x1,y1,x2,y2))
+                return true;
+        }
+        if(moveController.isSimpleJumping(x1,y1,x2,y2) &&
+            moveController.getMaxiJumpingSequenceLenghtAfterJump(x1,y1,x2,y2) + 1 == moveController.getMaxiJumpingSequenceLenght(x1,y1))
             return true;
         return false;
     }
 
     virtual bool isCorrectQueenMove(int x1, int y1,int x2, int y2) override{
-        if(moveController.isLongMoving(x1,y1,x2,y2) && moveController.countOfJumpedOverCheckers() == 0)
-            return true;
-        if(moveController.isLongJumping(x1,y1,x2,y2))
+        if(moveController.countOfJumpedOverCheckers() == 0){
+            if(moveController.getMaxiJumpingSequenceLenghtFromAll() == 0 && moveController.isLongMoving(x1,y1,x2,y2))
+                return true;
+        }
+        if(moveController.isLongJumping(x1,y1,x2,y2) &&
+            moveController.getMaxiJumpingSequenceLenghtAfterJump(x1,y1,x2,y2) + 1 == moveController.getMaxiJumpingSequenceLenght(x1,y1))
             return true;
         return false;
-        //throw NotImplementedException();
     }
-
-
-
 };
 
 #endif // MOVECONTROLLER_H
