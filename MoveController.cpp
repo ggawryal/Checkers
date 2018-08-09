@@ -1,5 +1,7 @@
 #include "MoveController.h"
 bool MoveController::isSimpleMovingUp(int x1,int y1,int x2,int y2){
+    if(checkboard.isNotInBoard(x1,y1) || checkboard.isNotInBoard(x2,y2))
+        return false;
     Checker cell1 = checkboard.getChecker(x1,y1);
     Checker cell2 = checkboard.getChecker(x2,y2);
     if(cell1 == Checker::empty || cell2 != Checker::empty)
@@ -13,6 +15,8 @@ bool MoveController::isSimpleMovingUp(int x1,int y1,int x2,int y2){
 }
 
 bool MoveController::isSimpleMovingDown(int x1,int y1,int x2,int y2){
+    if(checkboard.isNotInBoard(x1,y1) || checkboard.isNotInBoard(x2,y2))
+        return false;
     Checker cell1 = checkboard.getChecker(x1,y1);
     Checker cell2 = checkboard.getChecker(x2,y2);
     if(cell1 == Checker::empty || cell2 != Checker::empty)
@@ -31,6 +35,8 @@ bool MoveController::isSimpleMoving(int x1,int y1,int x2,int y2){
 }
 
 bool MoveController::isSimpleJumpingUp(int x1,int y1,int x2,int y2){
+    if(checkboard.isNotInBoard(x1,y1) || checkboard.isNotInBoard(x2,y2))
+        return false;
     Checker cell1 = checkboard.getChecker(x1,y1);
     Checker cell2 = checkboard.getChecker(x2,y2);
     if(cell1 == Checker::empty || cell2 != Checker::empty)
@@ -43,6 +49,8 @@ bool MoveController::isSimpleJumpingUp(int x1,int y1,int x2,int y2){
 }
 
 bool MoveController::isSimpleJumpingDown(int x1,int y1,int x2,int y2){
+    if(checkboard.isNotInBoard(x1,y1) || checkboard.isNotInBoard(x2,y2))
+        return false;
     Checker cell1 = checkboard.getChecker(x1,y1);
     Checker cell2 = checkboard.getChecker(x2,y2);
     if(cell1 == Checker::empty || cell2 != Checker::empty)
@@ -62,6 +70,8 @@ bool MoveController::isSimpleJumping(int x1,int y1,int x2,int y2){
 
 
 bool MoveController::isLongMoving(int x1,int y1,int x2,int y2){
+    if(checkboard.isNotInBoard(x1,y1) || checkboard.isNotInBoard(x2,y2))
+        return false;
     Checker cell1 = checkboard.getChecker(x1,y1);
     Checker cell2 = checkboard.getChecker(x2,y2);
     if(cell1 == Checker::empty || cell2 != Checker::empty)
@@ -84,6 +94,8 @@ bool MoveController::isLongMoving(int x1,int y1,int x2,int y2){
 }
 
 bool MoveController::isLongJumping(int x1,int y1,int x2,int y2){
+    if(checkboard.isNotInBoard(x1,y1) || checkboard.isNotInBoard(x2,y2))
+        return false;
     Checker cell1 = checkboard.getChecker(x1,y1);
     Checker cell2 = checkboard.getChecker(x2,y2);
     if(cell1 == Checker::empty || cell2 != Checker::empty)
@@ -148,6 +160,8 @@ void MoveController::move(int x1,int y1,int x2,int y2){
     }
    if(checkboard.jumpedOverCheckers.size() == 0 ||
        mjsf.getMaxiSequenceAfter(x2,y2,jumpingCheckerStartPos.x,jumpingCheckerStartPos.y,isPawn(checkboard.getChecker(x2,y2)),checkboard.jumpedOverCheckers) == 0){
+
+        moveCheckersType.push_back(checkboard.getChecker(x2,y2));
         if((whiteOnTurn == true && y2 == 0) || (whiteOnTurn == false && y2 == checkboard.getHeight()-1))
             promote(x2,y2);
         nextTurn();

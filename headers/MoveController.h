@@ -7,14 +7,15 @@
 #include "basics.h"
 #include "MaxiJumpSequenceFinder.h"
 
-#include <iostream>
-using namespace std;
 
 class MoveController{
     bool whiteOnTurn = true;
     Checkboard& checkboard;
     MaxiJumpSequenceFinder mjsf;
     sf::Vector2i jumpingCheckerStartPos;
+
+    std::vector<Checker> moveCheckersType;
+    std::vector<int> checkerCountAfterMoves;
 
     bool promote(int x1,int y1){
         assert(isMyChecker(whiteOnTurn,checkboard.getChecker(x1,y1)));
@@ -29,21 +30,20 @@ class MoveController{
         checkboard.deleteAllMarkedAsJumpedOverCheckers();
         whiteOnTurn ^= 1;
         mjsf.calculateForWholeBoard(checkboard.getBoard(),whiteOnTurn);
+        checkerCountAfterMoves.push_back(getPawnCount(true) + getPawnCount(false));
     }
+
 public:
     MoveController(Checkboard&c) : checkboard(c){
         mjsf.calculateForWholeBoard(checkboard.getBoard(),whiteOnTurn);
         jumpingCheckerStartPos = sf::Vector2i(-1,-1);
+        checkerCountAfterMoves.push_back(getPawnCount(true) + getPawnCount(false));
     }
 
     int getMaxiJumpingSequenceLenght(int x,int y){
-        cout<<x<<" "<<y<<endl;
         assert(isMyChecker(whiteOnTurn,checkboard.getChecker(x,y)));
-        if(jumpingCheckerStartPos == sf::Vector2i(-1,-1)){
-            cout<<"no.1"<<endl;
+        if(jumpingCheckerStartPos == sf::Vector2i(-1,-1))
             return mjsf.getMaxiSequenceAfter(x,y,x,y, isPawn(checkboard.getChecker(x,y)),checkboard.jumpedOverCheckers);
-        }
-        cout<<"zebra"<<endl;
         return mjsf.getMaxiSequenceAfter(x,y,jumpingCheckerStartPos.x,jumpingCheckerStartPos.y, isPawn(checkboard.getChecker(x,y)),checkboard.jumpedOverCheckers);
     }
     int getMaxiJumpingSequenceLenghtAfterJump(int x1,int y1,int x2,int y2){
@@ -69,14 +69,12 @@ public:
         return mjsf.getMaxiSequenceAfter(x2,y2,x1,y1, pawn,jumpedOverCheckersAfterNextJump);
     }
     int getMaxiJumpingSequenceLenghtFromAll(){
-        cout<<"start"<<endl;
         int res = 0;
         for(int i=0;i<checkboard.getWidth();i++){
             for(int j=0;j<checkboard.getHeight();j++)
                 if(isMyChecker(whiteOnTurn,getChecker(i,j)))
                     res = max(res,getMaxiJumpingSequenceLenght(i,j));
         }
-        cout<<"stop"<<endl;
         return res;
     }
 
@@ -100,6 +98,13 @@ public:
         return res;
     }
 
+    std::vector<Checker> getMoveCheckersType() const{
+        return moveCheckersType;
+    }
+    std::vector<int> getCheckerCountVector() const{
+        return checkerCountAfterMoves;
+    }
+
     Checker getChecker(int x,int y){
         return checkboard.getChecker(x,y);
     }
@@ -107,12 +112,8 @@ public:
     bool isBlockedMovingDown(int x,int y);
     bool isBlockedMoving(int x,int y);
     bool areAllCheckersBlocked(){
-        cout<<"aacb"<<endl;
-        if(getMaxiJumpingSequenceLenghtFromAll() > 0){
-            cout<<"nd"<<endl;
+        if(getMaxiJumpingSequenceLenghtFromAll() > 0)
             return false;
-        }
-                cout<<"nd3"<<endl;
         for(int i=0;i<checkboard.getWidth();i++){
             for(int j=0;j<checkboard.getHeight();j++){
                 if(isMyChecker(whiteOnTurn,getChecker(i,j))){
@@ -179,6 +180,7 @@ public:
 
 class Rules{
     int end_game_state = -1; // -1 -> still playing, 0 - white wins, 1 - black wins, 2 - draw
+    int maximumQueenMovesWithoutDraw = 15;
 public:
     MoveController & moveController;
     Rules(MoveController& mv) : moveController(mv) {}
@@ -210,6 +212,23 @@ public:
             else
                 end_game_state = 1;
         }
+
+        auto lastMovedCheckers = moveController.getMoveCheckersType();
+
+        if(end_game_state == -1 && lastMovedCheckers.size() >= 2*maximumQueenMovesWithoutDraw){
+            bool draw = true;
+            for(int i=0;i<maximumQueenMovesWithoutDraw*2;i++){
+                if(isPawn(lastMovedCheckers[lastMovedCheckers.size()-1-i])){
+                    draw = false;
+                    break;
+                }
+            }
+            auto countVect =  moveController.getCheckerCountVector();
+            if(countVect.back() == countVect[countVect.size()-1-2*maximumQueenMovesWithoutDraw] && draw == true)
+                end_game_state = 2;
+        }
+
+
         return end_game_state >= 0;
     }
     virtual bool isCorrectWhitePawnMove(int x1, int y1,int x2, int y2) = 0;

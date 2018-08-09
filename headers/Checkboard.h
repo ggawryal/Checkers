@@ -169,6 +169,14 @@ public:
     int getHeight(){
         return board.size() == 0 ? 0 : board[0].size();
     }
+    bool isNotInBoard(int x,int y){
+        return x < 0 || y < 0 || x >= getWidth() || y >= getHeight();
+    }
+    bool isInBoard(int x,int y){
+        if(isNotInBoard(x,y))
+            return false;
+        return true;
+    }
     Checker getChecker(int x,int y){
         assert(x < getWidth());
         assert(y < getHeight());
