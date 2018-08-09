@@ -10,6 +10,11 @@
 struct CheckerSpriteOnGrid{
     int x,y;
     sf::Sprite sprite;
+    friend bool operator<(const CheckerSpriteOnGrid&a,const CheckerSpriteOnGrid&b){
+        if(a.x == b.x)
+            return a.y < b.y;
+        return a.x < b.x;
+    }
 };
 
 class CheckBoardDrawer : public sf::Drawable, public Grid{
@@ -110,7 +115,7 @@ public:
         checkers[pos].sprite.setPosition(sf::Vector2f(position.x + checkers[pos].x*cellSize.x, position.y + checkers[pos].y*cellSize.y));
     }
 
-    void markChecker(int x,int y){
+    void markChecker(int x,int y,sf::Color color){
         int pos = -1;
         for(int i=0;i<checkers.size();i++){
             if(checkers[i].x == x && checkers[i].y == y){
@@ -119,7 +124,7 @@ public:
             }
         }
         assert(pos != -1);
-        checkers[pos].sprite.setColor(sf::Color(100,100,100,150));
+        checkers[pos].sprite.setColor(color);
     }
 
     void removeChecker(int x,int y){
@@ -216,7 +221,7 @@ public:
         else{
             board[x][y] = Checker::jumped_over;
             jumpedOverCheckers.push_back(sf::Vector2i(x,y));
-            drawer.markChecker(x,y);
+            drawer.markChecker(x,y,sf::Color(100,100,100,150));
         }
     }
 

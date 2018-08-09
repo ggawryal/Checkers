@@ -12,7 +12,27 @@ class MoveController{
     Checkboard& checkboard;
     MaxiJumpSequenceFinder mjsf;
     sf::Vector2i jumpingCheckerStartPos;
+
+    bool promote(int x1,int y1){
+        assert(isMyChecker(whiteOnTurn,checkboard.getChecker(x1,y1)));
+        checkboard.deleteChecker(x1,y1);
+        if(whiteOnTurn)
+            checkboard.addChecker(x1,y1,Checker::white_queen);
+        else
+            checkboard.addChecker(x1,y1,Checker::black_queen);
+    }
+    void nextTurn(){
+        jumpingCheckerStartPos = sf::Vector2i(-1,-1);
+        checkboard.deleteAllMarkedAsJumpedOverCheckers();
+        whiteOnTurn ^= 1;
+        mjsf.calculateForWholeBoard(checkboard.getBoard(),whiteOnTurn);
+    }
 public:
+    MoveController(Checkboard&c) : checkboard(c){
+        mjsf.calculateForWholeBoard(checkboard.getBoard(),whiteOnTurn);
+        jumpingCheckerStartPos = sf::Vector2i(-1,-1);
+    }
+
     int getMaxiJumpingSequenceLenght(int x,int y){
         assert(isMyChecker(whiteOnTurn,checkboard.getChecker(x,y)));
         if(jumpingCheckerStartPos == sf::Vector2i(-1,-1))
@@ -61,10 +81,7 @@ public:
         return !whiteOnTurn;
     }
 
-    MoveController(Checkboard&c) : checkboard(c){
-        mjsf.calculateForWholeBoard(checkboard.getBoard(),whiteOnTurn);
-        jumpingCheckerStartPos = sf::Vector2i(-1,-1);
-    }
+
     Checker getChecker(int x,int y){
         return checkboard.getChecker(x,y);
     }
@@ -108,22 +125,10 @@ public:
     bool isLongJumping(Quad quad){
         return isLongJumping(quad.x1, quad.y1, quad.x2, quad.y2);
     }
-    void nextTurn(){
-        jumpingCheckerStartPos = sf::Vector2i(-1,-1);
-        checkboard.deleteAllMarkedAsJumpedOverCheckers();
-        whiteOnTurn ^= 1;
-        mjsf.calculateForWholeBoard(checkboard.getBoard(),whiteOnTurn);
-    }
+
 
     void move(int x1,int y1,int x2,int y2);
-    bool promote(int x1,int y1){
-        assert(isMyChecker(whiteOnTurn,checkboard.getChecker(x1,y1)));
-        checkboard.deleteChecker(x1,y1);
-        if(whiteOnTurn)
-            checkboard.addChecker(x1,y1,Checker::white_queen);
-        else
-            checkboard.addChecker(x1,y1,Checker::black_queen);
-    }
+
 };
 
 

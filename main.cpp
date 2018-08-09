@@ -4,6 +4,7 @@
 #include <memory>
 #include <functional>
 #include <cassert>
+#include <set>
 #include "Checker.h"
 #include "MaxiJumpSequenceFinder.h"
 #include "TextureManager.h"
@@ -11,6 +12,7 @@
 #include "Checkboard.h"
 #include "MoveController.h"
 #include "MouseHandler.h"
+#include "Highlighter.h"
 using namespace std;
 
 
@@ -75,15 +77,17 @@ class Player{
 class HumanPlayer : public Player{
     GridPositioner& gridPositioner;
     MoveController& moveController;
+    Highlighter& highlighter;
     shared_ptr<Rules> rules;
     sf::RenderWindow& window;
     sf::Vector2i currentPawn = sf::Vector2i(-1,-1);
 public:
-    HumanPlayer(sf::RenderWindow& rw, GridPositioner& gd, MoveController& mv,shared_ptr<Rules> rul) :gridPositioner(gd), window(rw), moveController(mv) {rules = rul;}
+    HumanPlayer(sf::RenderWindow& rw, GridPositioner& gd, MoveController& mv, Highlighter& hl,shared_ptr<Rules> rul) :gridPositioner(gd), window(rw), moveController(mv), highlighter(hl) {rules = rul;}
     virtual ~HumanPlayer(){}
 
     virtual void onBeginOfTurn() {}
     virtual void onEndOfTurn() {
+        highlighter.resetCheckerHighlight(currentPawn.x,currentPawn.y);
         currentPawn = sf::Vector2i(-1,-1);
     }
 
@@ -93,8 +97,10 @@ public:
             if(MouseHandler::instance().getButton() == sf::Mouse::Left){
                 if(currentPawn == sf::Vector2i(-1,-1)){
                     auto cell = gridPositioner.getCellUnder(sf::Mouse::getPosition(window));
-                    if(isMyChecker(playsWhite(), moveController.getChecker(cell.x,cell.y)) && rules->existAnyCorrectMoveWith(cell.x,cell.y))
+                    if(isMyChecker(playsWhite(), moveController.getChecker(cell.x,cell.y)) && rules->existAnyCorrectMoveWith(cell.x,cell.y)){
                         currentPawn = cell;
+                        highlighter.highlightChecker(currentPawn.x,currentPawn.y,sf::Color::Green);
+                    }
                 }
                 else{
                     auto cell = gridPositioner.getCellUnder(sf::Mouse::getPosition(window));
@@ -106,6 +112,7 @@ public:
                 }
             }
             if(MouseHandler::instance().getButton() == sf::Mouse::Right && moveController.countOfJumpedOverCheckers() == 0){
+                highlighter.resetCheckerHighlight(currentPawn.x,currentPawn.y);
                 currentPawn = sf::Vector2i(-1,-1);
             }
 
@@ -132,12 +139,13 @@ int main(){
     GridPositioner gp(checkboard.drawer);
 
     MoveController mv(checkboard);
+    Highlighter highlighter(checkboard);
 
     shared_ptr<Rules> rules(new ClassicRules(mv));
 
     vector<unique_ptr<Player> > player;
-    player.push_back(unique_ptr<Player>(new HumanPlayer(window,gp,mv,rules)));
-    player.push_back(unique_ptr<Player>(new HumanPlayer(window,gp,mv,rules)));
+    player.push_back(unique_ptr<Player>(new HumanPlayer(window,gp,mv,highlighter, rules)));
+    player.push_back(unique_ptr<Player>(new HumanPlayer(window,gp,mv,highlighter, rules)));
 
     player[0]->setColor(true);
     player[1]->setColor(false);

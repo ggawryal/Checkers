@@ -68,6 +68,7 @@
 		<Unit filename="headers/Checkboard.h" />
 		<Unit filename="headers/Checker.h" />
 		<Unit filename="headers/Grid.h" />
+		<Unit filename="headers/Highlighter.h" />
 		<Unit filename="headers/MaxiJumpSequenceFinder.h" />
 		<Unit filename="headers/MouseHandler.h" />
 		<Unit filename="headers/MoveController.h" />
