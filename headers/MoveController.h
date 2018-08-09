@@ -7,6 +7,9 @@
 #include "basics.h"
 #include "MaxiJumpSequenceFinder.h"
 
+#include <iostream>
+using namespace std;
+
 class MoveController{
     bool whiteOnTurn = true;
     Checkboard& checkboard;
@@ -34,9 +37,13 @@ public:
     }
 
     int getMaxiJumpingSequenceLenght(int x,int y){
+        cout<<x<<" "<<y<<endl;
         assert(isMyChecker(whiteOnTurn,checkboard.getChecker(x,y)));
-        if(jumpingCheckerStartPos == sf::Vector2i(-1,-1))
+        if(jumpingCheckerStartPos == sf::Vector2i(-1,-1)){
+            cout<<"no.1"<<endl;
             return mjsf.getMaxiSequenceAfter(x,y,x,y, isPawn(checkboard.getChecker(x,y)),checkboard.jumpedOverCheckers);
+        }
+        cout<<"zebra"<<endl;
         return mjsf.getMaxiSequenceAfter(x,y,jumpingCheckerStartPos.x,jumpingCheckerStartPos.y, isPawn(checkboard.getChecker(x,y)),checkboard.jumpedOverCheckers);
     }
     int getMaxiJumpingSequenceLenghtAfterJump(int x1,int y1,int x2,int y2){
@@ -62,12 +69,14 @@ public:
         return mjsf.getMaxiSequenceAfter(x2,y2,x1,y1, pawn,jumpedOverCheckersAfterNextJump);
     }
     int getMaxiJumpingSequenceLenghtFromAll(){
+        cout<<"start"<<endl;
         int res = 0;
         for(int i=0;i<checkboard.getWidth();i++){
             for(int j=0;j<checkboard.getHeight();j++)
                 if(isMyChecker(whiteOnTurn,getChecker(i,j)))
                     res = max(res,getMaxiJumpingSequenceLenght(i,j));
         }
+        cout<<"stop"<<endl;
         return res;
     }
 
@@ -98,8 +107,12 @@ public:
     bool isBlockedMovingDown(int x,int y);
     bool isBlockedMoving(int x,int y);
     bool areAllCheckersBlocked(){
-        if(getMaxiJumpingSequenceLenghtFromAll() > 0)
+        cout<<"aacb"<<endl;
+        if(getMaxiJumpingSequenceLenghtFromAll() > 0){
+            cout<<"nd"<<endl;
             return false;
+        }
+                cout<<"nd3"<<endl;
         for(int i=0;i<checkboard.getWidth();i++){
             for(int j=0;j<checkboard.getHeight();j++){
                 if(isMyChecker(whiteOnTurn,getChecker(i,j))){
@@ -115,6 +128,7 @@ public:
                 }
             }
         }
+
         return true;
     }
 

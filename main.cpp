@@ -165,12 +165,13 @@ int main(){
         if(mv.isBlackOnTurn() != currentPlayerId){
             player[currentPlayerId]->onEndOfTurn();
             currentPlayerId ^= 1;
+            if(rules->isEndOfGame())
+                break;
             player[currentPlayerId]->onBeginOfTurn();
         }
         player[currentPlayerId]->onTurn();
 
-        if(rules->isEndOfGame())
-            break;
+
 
         if(currentPlayerId == 0)
             window.clear(sf::Color(220,170,50));
