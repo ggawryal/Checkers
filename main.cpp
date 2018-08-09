@@ -40,6 +40,20 @@ public:
                 if((i+j) % 2 == 1)
                     checkboard.addChecker(j,i,lower_pawn);
     }
+    void customArrange(vector<vector<int> > board){
+        assert(board[0].size() == checkboard.getWidth());
+        assert(board.size() == checkboard.getHeight());
+
+        vector<vector<Checker> > customArrangeChecker(board[0].size(),vector<Checker>(board.size()));
+        for(int i=0;i<board[0].size();i++){
+            for(int j=0;j<board.size();j++)
+                customArrangeChecker[j][i] = Checker(board[i][j]);
+        }
+        for(int i=0;i<customArrangeChecker.size();i++)
+            for(int j=0;j<customArrangeChecker[i].size();j++)
+                if(customArrangeChecker[i][j] != Checker::empty)
+                    checkboard.addChecker(i,j,customArrangeChecker[i][j]);
+    }
 };
 
 class Player{
@@ -110,7 +124,18 @@ int main(){
     checkboard.setSize(8,8);
 
     CheckersArranger arranger(checkboard);
-    arranger.arrange(3,3);
+    vector<vector<int> > customArrangeInt = {{0, 0, 2, 0, 0, 0, 0, 0},
+                                             {0, 3, 0, 3, 0, 3, 0, 0},
+                                             {0, 0, 0, 0, 0, 0, 0, 0},
+                                             {0, 3, 0, 3, 0, 3, 0, 0},
+                                             {0, 0, 0, 0, 0, 0, 0, 0},
+                                             {0, 3, 0, 3, 0, 3, 0, 0},
+                                             {0, 0, 0, 0, 0, 0, 0, 0},
+                                             {0, 0, 0, 0, 0, 3, 0, 0}};
+
+    arranger.customArrange(customArrangeInt);
+
+    //arranger.arrange(3,3);
 
     checkboard.drawer.setPosition(sf::Vector2i(100,100));
     checkboard.drawer.setImageSize(700,700);
