@@ -80,10 +80,42 @@ public:
     bool isBlackOnTurn(){
         return !whiteOnTurn;
     }
-
+    int getPawnCount(bool white){
+        int res = 0;
+        for(auto a : checkboard.getBoard()){
+            for(auto checker : a){
+                if(isMyChecker(white,checker))
+                    res++;
+            }
+        }
+        return res;
+    }
 
     Checker getChecker(int x,int y){
         return checkboard.getChecker(x,y);
+    }
+    bool isBlockedMovingUp(int x,int y);
+    bool isBlockedMovingDown(int x,int y);
+    bool isBlockedMoving(int x,int y);
+    bool areAllCheckersBlocked(){
+        if(getMaxiJumpingSequenceLenghtFromAll() > 0)
+            return false;
+        for(int i=0;i<checkboard.getWidth();i++){
+            for(int j=0;j<checkboard.getHeight();j++){
+                if(isMyChecker(whiteOnTurn,getChecker(i,j))){
+                    if(isPawn(getChecker(i,j))){
+                        if(whiteOnTurn && isBlockedMovingUp(i,j) == false)
+                            return false;
+                        if(whiteOnTurn == false && isBlockedMovingDown(i,j) == false)
+                            return false;
+                    }
+                    else
+                        if(isBlockedMoving(i,j) == false)
+                            return false;
+                }
+            }
+        }
+        return true;
     }
 
     bool isSimpleMovingUp(int x1,int y1,int x2,int y2);
@@ -126,21 +158,46 @@ public:
         return isLongJumping(quad.x1, quad.y1, quad.x2, quad.y2);
     }
 
-
     void move(int x1,int y1,int x2,int y2);
 
 };
 
 
 class Rules{
+    int end_game_state = -1; // -1 -> still playing, 0 - white wins, 1 - black wins, 2 - draw
 public:
     MoveController & moveController;
     Rules(MoveController& mv) : moveController(mv) {}
-
+    bool whiteWon(){
+        return end_game_state == 0;
+    }
+    bool blackWon(){
+        return end_game_state == 1;
+    }
+    bool isDraw(){
+        return end_game_state == 2;
+    }
+    bool areStillPlaying(){
+        return end_game_state == -1;
+    }
     virtual bool existAnyCorrectMoveWith(int x1,int y1){
         return true;
     }
-
+    virtual bool isEndOfGame(){
+        int blackCheckers = moveController.getPawnCount(false), whiteCheckers = moveController.getPawnCount(true);
+        assert(blackCheckers > 0 || whiteCheckers > 0);
+        if(blackCheckers == 0)
+            end_game_state = 0;
+        if(whiteCheckers == 0)
+            end_game_state = 1;
+        if(moveController.areAllCheckersBlocked()){
+            if(moveController.isBlackOnTurn())
+                end_game_state = 0;
+            else
+                end_game_state = 1;
+        }
+        return end_game_state >= 0;
+    }
     virtual bool isCorrectWhitePawnMove(int x1, int y1,int x2, int y2) = 0;
     virtual bool isCorrectWhitePawnMove(Quad q) {return isCorrectWhitePawnMove(q.x1,q.y1,q.x2,q.y2);}
 

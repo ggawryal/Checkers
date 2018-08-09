@@ -113,6 +113,26 @@ bool MoveController::isLongJumping(int x1,int y1,int x2,int y2){
     return false;
 }
 
+bool MoveController::isBlockedMovingUp(int x,int y){
+    if(x-1 >= 0 && y-1 >= 0 && checkboard.getChecker(x-1,y-1) == Checker::empty)
+        return false;
+    if(x+1 < checkboard.getWidth() && y-1 >= 0 && checkboard.getChecker(x+1,y-1) == Checker::empty)
+        return false;
+    return true;
+}
+
+bool MoveController::isBlockedMovingDown(int x,int y){
+    if(x-1 >= 0 && y+1 < checkboard.getHeight() && checkboard.getChecker(x-1,y+1) == Checker::empty)
+        return false;
+    if(x+1 < checkboard.getWidth() && y+1 < checkboard.getHeight() && checkboard.getChecker(x+1,y+1) == Checker::empty)
+        return false;
+    return true;
+}
+
+bool MoveController::isBlockedMoving(int x,int y){
+    return (isBlockedMovingUp(x,y) && isBlockedMovingDown(x,y) );
+}
+
 
 void MoveController::move(int x1,int y1,int x2,int y2){
     if(jumpingCheckerStartPos == sf::Vector2i(-1,-1))
@@ -128,7 +148,7 @@ void MoveController::move(int x1,int y1,int x2,int y2){
     }
    if(checkboard.jumpedOverCheckers.size() == 0 ||
        mjsf.getMaxiSequenceAfter(x2,y2,jumpingCheckerStartPos.x,jumpingCheckerStartPos.y,isPawn(checkboard.getChecker(x2,y2)),checkboard.jumpedOverCheckers) == 0){
-        if((whiteOnTurn && y2 == 0) || (whiteOnTurn == false && y2 == checkboard.getHeight()-1))
+        if((whiteOnTurn == true && y2 == 0) || (whiteOnTurn == false && y2 == checkboard.getHeight()-1))
             promote(x2,y2);
         nextTurn();
     }

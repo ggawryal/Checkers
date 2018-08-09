@@ -166,6 +166,10 @@ int main(){
             player[currentPlayerId]->onBeginOfTurn();
         }
         player[currentPlayerId]->onTurn();
+
+        if(rules->isEndOfGame())
+            break;
+
         if(currentPlayerId == 0)
             window.clear(sf::Color(220,170,50));
         else
@@ -173,6 +177,11 @@ int main(){
         window.draw(checkboard.drawer);
         window.display();
     }
-
+    if(rules->blackWon())
+        cout<<"Wygraly czarne\n";
+    if(rules->whiteWon())
+        cout<<"Wygraly biale\n";
+    if(rules->isDraw())
+        cout<<"Remis\n";
     return 0;
 }
