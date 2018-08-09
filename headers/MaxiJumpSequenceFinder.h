@@ -1,12 +1,12 @@
 #ifndef MAXIJUMPSEQUENCEFINDER_H
 #define MAXIJUMPSEQUENCEFINDER_H
 
-#include <iostream>
 #include <vector>
 #include <SFML/System.hpp>
 #include <map>
 #include <cassert>
 #include "Checker.h"
+
 using namespace std;
 class MaxiJumpSequenceFinder{
     int n,m;
@@ -106,26 +106,19 @@ public:
         reset();
         loadBoard(b);
         loadPawnPosition();
-        for(int j=0;j<m;j++){
-            for(int i=0;i<n;i++){
-                if(isMyChecker(whiteOnTurn, board[i][j])){
-                    std::cout<<solve(i,j,isPawn(board[i][j]))<<" ";
-                }
-                else
-                    std::cout<<"- ";
-            }
-            std::cout<<std::endl;
-        }
+        for(int j=0;j<m;j++)
+            for(int i=0;i<n;i++)
+                if(isMyChecker(whiteOnTurn, board[i][j]))
+                    solve(i,j,isPawn(board[i][j]));
+
     }
     int getMaxiSequenceAfter(int x,int y,int sx,int sy,bool pawn,std::vector<sf::Vector2i> removedPawns){
         PawnState state = PawnState(x,y,0,pawn^1);
         state.sx = sx;
         state.sy = sy;
-        for(int i=0;i<removedPawns.size();i++){
+        for(int i=0;i<removedPawns.size();i++)
             state.pawnMask |= (1<<pawnPositionToId[removedPawns[i].x][removedPawns[i].y]);
-           // std::cout<<"pptoid "<<removedPawns[i].x<<" "<<removedPawns[i].y<<" "<<pawnPositionToId[removedPawns[i].x][removedPawns[i].y]<<std::endl;
-        }
-     //   std::cout<<"stan szukany:  "<<state.x<<" "<<state.y<<" "<<state.sx<<" "<<state.sy<<" "<<state.pawnMask<<" "<<state.amIqueen<<" ";
+
         assert(dp.count(state) > 0);
         return dp[state];
     }

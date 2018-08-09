@@ -91,6 +91,10 @@ public:
             newChecker.sprite.setTexture(TextureManager::instance().get("whitePawn 1"));
         if(type == Checker::white_queen)
             newChecker.sprite.setTexture(TextureManager::instance().get("whiteQueen 1"));
+
+        sf::Vector2u standardSize = checkboard[0][0].getTexture()->getSize();
+        newChecker.sprite.setScale(cellSize.x/(float)standardSize.x, cellSize.y/(float)standardSize.y);
+
     }
     void moveChecker(int x,int y,int x2, int y2){
         int pos = -1;
@@ -121,7 +125,6 @@ public:
     void removeChecker(int x,int y){
         for(auto it=checkers.begin();it != checkers.end();it++){
             if(it->x == x && it->y == y){
-                std::cout<<"erasing"<<std::endl;
                 checkers.erase(it);
                 break;
             }
@@ -179,7 +182,7 @@ public:
         assert(y < board[0].size());
 
         if(board[x][y] != Checker::empty){
-            std::cout<<"Warning: cell "<<x<<" "<<y<<" not empty, already "<<(int)board[x][y]<<" on it"<<std::endl;
+            std::cerr<<"Warning: cell "<<x<<" "<<y<<" not empty, already "<<(int)board[x][y]<<" on it"<<std::endl;
             for(int i=0;i<drawer.checkers.size();i++){
                 if(drawer.checkers[i].x == x && drawer.checkers[i].y == y){
                     drawer.checkers.erase(drawer.checkers.begin()+i);
@@ -197,7 +200,7 @@ public:
         assert(y < board[0].size());
 
         if(board[x][y] == Checker::empty)
-            std::cout<<"Warning: trying to remove checker from cell "<<x<<" "<<y<<" which is already empty"<<std::endl;
+            std::cerr<<"Warning: trying to remove checker from cell "<<x<<" "<<y<<" which is already empty"<<std::endl;
         else{
             board[x][y] = Checker::empty;
             drawer.removeChecker(x,y);
@@ -209,7 +212,7 @@ public:
         assert(y < board[0].size());
 
         if(board[x][y] == Checker::empty)
-            std::cout<<"Warning: trying to mark checker from cell "<<x<<" "<<y<<" which is already empty"<<std::endl;
+            std::cerr<<"Warning: trying to mark checker from cell "<<x<<" "<<y<<" which is already empty"<<std::endl;
         else{
             board[x][y] = Checker::jumped_over;
             jumpedOverCheckers.push_back(sf::Vector2i(x,y));

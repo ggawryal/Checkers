@@ -1,21 +1,17 @@
 #include "MaxiJumpSequenceFinder.h"
-using namespace std;
+
 void MaxiJumpSequenceFinder::solvePawn(PawnState state){
     if(dp.count(state) > 0)
         return;
     dp[state] = 0;
-    //std::cout<<"visited "<< state.x<<" "<<state.y<<" "<<state.sx<<" "<<state.sy<<" "<<state.pawnMask<<" "<<state.amIqueen<< std::endl;
     std::vector<std::pair<int,int> > cells = {{1,1},{-1,1},{-1,-1},{1,-1}};
     for(int i=0;i<cells.size();i++){
         int ex = cells[i].first, ey = cells[i].second;
         if(canJumpOver(state.x+ex,state.y+ey,ex,ey)){
-        //    std::cout<<"i can jump over"<<std::endl;
             PawnState newState = state;
             newState.x += ex*2;
             newState.y += ey*2;
-         //   cout<<"no w sumie spoko"<<endl;
             newState.pawnMask |= (1<<pawnPositionToId[state.x+ex][state.y+ey]);
-         //   cout<<"Krzysztof Pazdro"<<endl;
             Checker backedUp = board[state.x+ex][state.y+ey];
             board[state.x+ex][state.y+ey] = Checker::jumped_over;
 
@@ -32,7 +28,6 @@ void MaxiJumpSequenceFinder::solveQueen(PawnState state){
 
     if(dp.count(state) != 0)
         return;
-    std::cout<<"visited "<< state.x<<" "<<state.y<<" "<<state.sx<<" "<<state.sy<<" "<<state.pawnMask<<" "<<state.amIqueen<< std::endl;
     dp[state] = 0;
 
     std::vector<std::pair<int,int> > cells = {{1,1},{-1,1},{-1,-1},{1,-1}};

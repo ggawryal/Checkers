@@ -48,7 +48,6 @@ public:
                 if(isMyChecker(whiteOnTurn,getChecker(i,j)))
                     res = max(res,getMaxiJumpingSequenceLenght(i,j));
         }
-        cout<<"maxi = "<<res<<endl;
         return res;
     }
 

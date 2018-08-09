@@ -124,18 +124,7 @@ int main(){
     checkboard.setSize(8,8);
 
     CheckersArranger arranger(checkboard);
-    vector<vector<int> > customArrangeInt = {{0, 0, 2, 0, 0, 0, 0, 0},
-                                             {0, 3, 0, 3, 0, 3, 0, 0},
-                                             {0, 0, 0, 0, 0, 0, 0, 0},
-                                             {0, 3, 0, 3, 0, 3, 0, 0},
-                                             {0, 0, 0, 0, 0, 0, 0, 0},
-                                             {0, 3, 0, 3, 0, 3, 0, 0},
-                                             {0, 0, 0, 0, 0, 0, 0, 0},
-                                             {0, 0, 0, 0, 0, 3, 0, 0}};
-
-    arranger.customArrange(customArrangeInt);
-
-    //arranger.arrange(3,3);
+    arranger.arrange(3,3);
 
     checkboard.drawer.setPosition(sf::Vector2i(100,100));
     checkboard.drawer.setImageSize(700,700);
