@@ -87,7 +87,8 @@ public:
 
     virtual void onBeginOfTurn() {}
     virtual void onEndOfTurn() {
-        highlighter.resetCheckerHighlight(currentPawn.x,currentPawn.y);
+        if(currentPawn != sf::Vector2i(-1,-1))
+            highlighter.resetCheckerHighlight(currentPawn.x,currentPawn.y);
         currentPawn = sf::Vector2i(-1,-1);
     }
 
@@ -112,7 +113,8 @@ public:
                 }
             }
             if(MouseHandler::instance().getButton() == sf::Mouse::Right && moveController.countOfJumpedOverCheckers() == 0){
-                highlighter.resetCheckerHighlight(currentPawn.x,currentPawn.y);
+                if(currentPawn != sf::Vector2i(-1,-1))
+                    highlighter.resetCheckerHighlight(currentPawn.x,currentPawn.y);
                 currentPawn = sf::Vector2i(-1,-1);
             }
 
