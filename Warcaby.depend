@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1533846252 source:d:\programowanie\warcaby\main.cpp
+1533897383 source:d:\programowanie\warcaby\main.cpp
 	<SFML/Graphics.hpp>
 	<iostream>
 	<vector>
@@ -15,6 +15,8 @@
 	"MoveController.h"
 	"MouseHandler.h"
 	"Highlighter.h"
+	"WindowResizer.h"
+	"WindowResizer.h"
 
 1532364783 d:\programowanie\libs\sfml\include\sfml\graphics.hpp
 	<SFML/Window.hpp>
@@ -425,26 +427,26 @@
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Window/GlResource.hpp>
 
-1533820461 d:\programowanie\warcaby\headers\maxijumpsequencefinder.h
+1533846522 d:\programowanie\warcaby\headers\maxijumpsequencefinder.h
 	<vector>
 	<SFML/System.hpp>
 	<map>
 	<cassert>
 	"Checker.h"
 
-1533820461 source:d:\programowanie\warcaby\maxijumpsequencefinder.cpp
+1533846522 source:d:\programowanie\warcaby\maxijumpsequencefinder.cpp
 	"MaxiJumpSequenceFinder.h"
 
-1532516446 source:d:\programowanie\warcaby\texturemanager.cpp
+1533846522 source:d:\programowanie\warcaby\texturemanager.cpp
 	"TextureManager.h"
 
-1532516446 d:\programowanie\warcaby\headers\texturemanager.h
+1533846522 d:\programowanie\warcaby\headers\texturemanager.h
 	<vector>
 	<map>
 	<string>
 	<SFML/Graphics.hpp>
 
-1532516446 d:\programowanie\warcaby\headers\grid.h
+1533846522 d:\programowanie\warcaby\headers\grid.h
 	<SFML/System.hpp>
 
 1532516446 source:d:\programowanie\warcaby\player.cpp
@@ -453,7 +455,7 @@
 1532526704 d:\programowanie\warcaby\headers\player.h
 	"Grid.h"
 
-1533820461 d:\programowanie\warcaby\headers\checker.h
+1533846522 d:\programowanie\warcaby\headers\checker.h
 
 1532612549 d:\programowanie\warcaby\include\checkboard.h
 	<SFML/Graphics.hpp>
@@ -463,20 +465,20 @@
 	<cassert>
 	<iostream>
 
-1533846344 d:\programowanie\warcaby\headers\movecontroller.h
+1533846522 d:\programowanie\warcaby\headers\movecontroller.h
 	<SFML/System.hpp>
 	"Checker.h"
 	"Checkboard.h"
 	"basics.h"
 	"MaxiJumpSequenceFinder.h"
 
-1533403320 d:\programowanie\warcaby\headers\basics.h
+1533846522 d:\programowanie\warcaby\headers\basics.h
 	<SFML/System.hpp>
 
-1533845141 source:d:\programowanie\warcaby\movecontroller.cpp
+1533846522 source:d:\programowanie\warcaby\movecontroller.cpp
 	"MoveController.h"
 
-1533844745 d:\programowanie\warcaby\headers\checkboard.h
+1533846522 d:\programowanie\warcaby\headers\checkboard.h
 	<SFML/Graphics.hpp>
 	"TextureManager.h"
 	"Grid.h"
@@ -484,9 +486,12 @@
 	<cassert>
 	<iostream>
 
-1533403320 d:\programowanie\warcaby\headers\mousehandler.h
+1533846522 d:\programowanie\warcaby\headers\mousehandler.h
 	<vector>
 	<SFML/Graphics.hpp>
 
-1533820461 d:\programowanie\warcaby\headers\highlighter.h
+1533846522 d:\programowanie\warcaby\headers\highlighter.h
+
+1533896479 d:\programowanie\warcaby\include\windowresizer.h
+	<SFML/Graphics.hpp>
 

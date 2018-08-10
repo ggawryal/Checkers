@@ -13,6 +13,9 @@
 #include "MoveController.h"
 #include "MouseHandler.h"
 #include "Highlighter.h"
+#include "WindowResizer.h"
+#include "WindowResizer.h"
+
 using namespace std;
 
 
@@ -79,10 +82,10 @@ class HumanPlayer : public Player{
     MoveController& moveController;
     Highlighter& highlighter;
     shared_ptr<Rules> rules;
-    sf::RenderWindow& window;
+    ResizableRenderWindow& window;
     sf::Vector2i currentPawn = sf::Vector2i(-1,-1);
 public:
-    HumanPlayer(sf::RenderWindow& rw, GridPositioner& gd, MoveController& mv, Highlighter& hl,shared_ptr<Rules> rul) :gridPositioner(gd), window(rw), moveController(mv), highlighter(hl) {rules = rul;}
+    HumanPlayer(ResizableRenderWindow& rw, GridPositioner& gd, MoveController& mv, Highlighter& hl,shared_ptr<Rules> rul) :gridPositioner(gd), window(rw), moveController(mv), highlighter(hl) {rules = rul;}
     virtual ~HumanPlayer(){}
 
     virtual void onBeginOfTurn() {}
@@ -94,17 +97,17 @@ public:
 
 
     virtual void onTurn() override{
-        if(gridPositioner.getCellUnder(MouseHandler::instance().getCurrentMousePosition()) != sf::Vector2i(-1,-1)){
+        if(gridPositioner.getCellUnder(window.mapPixelToStd(MouseHandler::instance().getCurrentMousePosition())) != sf::Vector2i(-1,-1)){
             if(MouseHandler::instance().getButton() == sf::Mouse::Left){
                 if(currentPawn == sf::Vector2i(-1,-1)){
-                    auto cell = gridPositioner.getCellUnder(sf::Mouse::getPosition(window));
+                    auto cell = gridPositioner.getCellUnder(window.mapPixelToStd(sf::Mouse::getPosition(window)));
                     if(isMyChecker(playsWhite(), moveController.getChecker(cell.x,cell.y)) && rules->existAnyCorrectMoveWith(cell.x,cell.y)){
                         currentPawn = cell;
-                        highlighter.highlightChecker(currentPawn.x,currentPawn.y,sf::Color::Green);
+                        highlighter.highlightChecker(currentPawn.x,currentPawn.y,sf::Color(0,255,128));
                     }
                 }
                 else{
-                    auto cell = gridPositioner.getCellUnder(sf::Mouse::getPosition(window));
+                    auto cell = gridPositioner.getCellUnder(window.mapPixelToStd(sf::Mouse::getPosition(window)));
                     Quad q = Quad(currentPawn,cell);
                     if(rules->isCorrectMove(q)){
                        moveController.move(currentPawn.x,currentPawn.y,cell.x,cell.y);
@@ -125,8 +128,8 @@ public:
 
 
 int main(){
-    sf::RenderWindow window(sf::VideoMode(1280, 800), "Checkers!");
-
+    ResizableRenderWindow window(sf::VideoMode(1280, 800), "Checkers!");
+    window.setStdSize(window.getSize());
     TextureManager& textureManager = TextureManager::instance();
     textureManager.loadAll();
     Checkboard checkboard;
