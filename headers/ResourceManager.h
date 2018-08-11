@@ -1,5 +1,5 @@
-#ifndef TEXTUREMANAGER_H
-#define TEXTUREMANAGER_H
+#ifndef RESOURCEMANAGER_H
+#define RESOURCEMANAGER_H
 
 #include <vector>
 #include <map>
@@ -38,4 +38,37 @@ public:
 
 };
 
-#endif // TEXTUREMANAGER_H
+class FontManager{
+    FontManager() = default;
+    FontManager(FontManager const&) = delete;
+    FontManager(FontManager&&) = delete;
+    FontManager& operator=(FontManager const&) = delete;
+    FontManager& operator=(FontManager &&) = delete;
+
+    std::vector<sf::Font> fonts;
+    std::map<std::string,int> mapping;
+
+public:
+   static FontManager& instance() {
+        static FontManager myInstance;
+        return myInstance;
+    }
+
+    void load(const std::string name, const std::string filename){
+        fonts.push_back(sf::Font());
+        fonts.back().loadFromFile(filename);
+        mapping[name] = fonts.size()-1;
+    }
+    void loadAll();
+
+
+    sf::Font& get(const std::string& name){
+        return fonts[mapping[name]];
+    }
+    sf::Font& operator[](const std::string&name){
+        return get(name);
+    }
+
+};
+
+#endif // RESOURCEMANAGER_H

@@ -64,7 +64,7 @@
 		</Linker>
 		<Unit filename="MaxiJumpSequenceFinder.cpp" />
 		<Unit filename="MoveController.cpp" />
-		<Unit filename="TextureManager.cpp" />
+		<Unit filename="ResourceManager.cpp" />
 		<Unit filename="headers/Checkboard.h" />
 		<Unit filename="headers/Checker.h" />
 		<Unit filename="headers/Grid.h" />
@@ -72,7 +72,8 @@
 		<Unit filename="headers/MaxiJumpSequenceFinder.h" />
 		<Unit filename="headers/MouseHandler.h" />
 		<Unit filename="headers/MoveController.h" />
-		<Unit filename="headers/TextureManager.h" />
+		<Unit filename="headers/ResourceManager.h" />
+		<Unit filename="headers/WindowResizer.h" />
 		<Unit filename="headers/basics.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>

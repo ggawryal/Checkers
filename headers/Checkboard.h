@@ -1,7 +1,7 @@
 #ifndef CHECKBOARD_H
 #define CHECKBOARD_H
 #include <SFML/Graphics.hpp>
-#include "TextureManager.h"
+#include "ResourceManager.h"
 #include "Grid.h"
 #include <vector>
 #include <cassert>

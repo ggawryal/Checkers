@@ -7,13 +7,12 @@
 #include <set>
 #include "Checker.h"
 #include "MaxiJumpSequenceFinder.h"
-#include "TextureManager.h"
+#include "ResourceManager.h"
 #include "Grid.h"
 #include "Checkboard.h"
 #include "MoveController.h"
 #include "MouseHandler.h"
 #include "Highlighter.h"
-#include "WindowResizer.h"
 #include "WindowResizer.h"
 
 using namespace std;
@@ -130,15 +129,17 @@ public:
 int main(){
     ResizableRenderWindow window(sf::VideoMode(1280, 800), "Checkers!");
     window.setStdSize(window.getSize());
-    TextureManager& textureManager = TextureManager::instance();
-    textureManager.loadAll();
+
+    TextureManager::instance().loadAll();
+    FontManager::instance().loadAll();
+
     Checkboard checkboard;
     checkboard.setSize(8,8);
 
     CheckersArranger arranger(checkboard);
-    arranger.arrange(3,3);
+    arranger.arrange(1,3);
 
-    checkboard.drawer.setPosition(sf::Vector2i(100,100));
+    checkboard.drawer.setPosition(sf::Vector2i(50,50));
     checkboard.drawer.setImageSize(700,700);
 
     GridPositioner gp(checkboard.drawer);
@@ -183,11 +184,35 @@ int main(){
         window.draw(checkboard.drawer);
         window.display();
     }
+    sf::String message = "";
     if(rules->blackWon())
-        cout<<"Wygraly czarne\n";
+        message = "Wygraly biale";
     if(rules->whiteWon())
-        cout<<"Wygraly biale\n";
+        message = "Wygraly czarne";
     if(rules->isDraw())
-        cout<<"Remis\n";
+        message = "Remis";
+
+    sf::Text text;
+    text.setFont(FontManager::instance().get("arial"));
+    text.setPosition(800,50);
+    text.setColor(sf::Color::Black);
+    text.setCharacterSize(64);
+    text.setString(message);
+
+
+    while (window.isOpen()){
+        sf::Event event;
+        while (window.pollEvent(event)){
+            if (event.type == sf::Event::Closed)
+                window.close();
+            MouseHandler::instance().handle(event);
+        }
+        window.clear(sf::Color(100,100,100));
+        window.draw(checkboard.drawer);
+        window.draw(text);
+        window.display();
+    }
+
+
     return 0;
 }
