@@ -179,7 +179,8 @@ public:
 
 
 class Rules{
-    int end_game_state = -1; // -1 -> still playing, 0 - white wins, 1 - black wins, 2 - draw
+    int end_game_state = -1; // -1 -> still playing, 0 -> white wins, 1 -> black wins, 2 -> draw
+    int end_game_cause = -1; // -1 -> other, 0 -> no enemy pawns, 1 -> enemy pawn are blocked, 2 -> 15moves rule
     int maximumQueenMovesWithoutDraw = 15;
 public:
     MoveController & moveController;
@@ -196,21 +197,34 @@ public:
     bool areStillPlaying(){
         return end_game_state == -1;
     }
+
+    int getEndOfGameReason(){
+        return end_game_cause;
+    }
+
     virtual bool existAnyCorrectMoveWith(int x1,int y1){
         return true;
     }
     virtual bool isEndOfGame(){
         int blackCheckers = moveController.getPawnCount(false), whiteCheckers = moveController.getPawnCount(true);
         assert(blackCheckers > 0 || whiteCheckers > 0);
-        if(blackCheckers == 0)
+        if(blackCheckers == 0){
             end_game_state = 0;
-        if(whiteCheckers == 0)
+            end_game_cause = 0;
+            return end_game_state >= 0;
+        }
+        if(whiteCheckers == 0){
             end_game_state = 1;
+            end_game_cause = 0;
+            return end_game_state >= 0;
+        }
         if(moveController.areAllCheckersBlocked()){
             if(moveController.isBlackOnTurn())
                 end_game_state = 0;
             else
                 end_game_state = 1;
+            end_game_cause = 1;
+            return end_game_state >= 0;
         }
 
         auto lastMovedCheckers = moveController.getMoveCheckersType();
@@ -224,8 +238,10 @@ public:
                 }
             }
             auto countVect =  moveController.getCheckerCountVector();
-            if(countVect.back() == countVect[countVect.size()-1-2*maximumQueenMovesWithoutDraw] && draw == true)
+            if(countVect.back() == countVect[countVect.size()-1-2*maximumQueenMovesWithoutDraw] && draw == true){
                 end_game_state = 2;
+                end_game_cause = 2;
+            }
         }
 
 

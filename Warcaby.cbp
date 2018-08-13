@@ -65,6 +65,7 @@
 		<Unit filename="MaxiJumpSequenceFinder.cpp" />
 		<Unit filename="MoveController.cpp" />
 		<Unit filename="ResourceManager.cpp" />
+		<Unit filename="headers/Button.h" />
 		<Unit filename="headers/Checkboard.h" />
 		<Unit filename="headers/Checker.h" />
 		<Unit filename="headers/Grid.h" />

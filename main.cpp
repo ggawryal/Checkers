@@ -14,6 +14,7 @@
 #include "MouseHandler.h"
 #include "Highlighter.h"
 #include "WindowResizer.h"
+#include "Button.h"
 
 using namespace std;
 
@@ -142,6 +143,8 @@ int main(){
     checkboard.drawer.setPosition(sf::Vector2i(50,50));
     checkboard.drawer.setImageSize(700,700);
 
+
+
     GridPositioner gp(checkboard.drawer);
 
     MoveController mv(checkboard);
@@ -161,8 +164,10 @@ int main(){
 
         sf::Event event;
         while (window.pollEvent(event)){
-            if (event.type == sf::Event::Closed)
+            if (event.type == sf::Event::Closed){
                 window.close();
+                exit(0);
+            }
             MouseHandler::instance().handle(event);
         }
 
@@ -184,20 +189,49 @@ int main(){
         window.draw(checkboard.drawer);
         window.display();
     }
-    sf::String message = "";
-    if(rules->blackWon())
-        message = "Wygraly biale";
-    if(rules->whiteWon())
-        message = "Wygraly czarne";
-    if(rules->isDraw())
-        message = "Remis";
 
-    sf::Text text;
-    text.setFont(FontManager::instance().get("arial"));
-    text.setPosition(800,50);
-    text.setColor(sf::Color::Black);
-    text.setCharacterSize(64);
-    text.setString(message);
+
+    sf::String winnerMessage = "";
+    sf::String endOfGameReason = "";
+
+    if(rules->whiteWon())
+        winnerMessage = L"Wygrały białe";
+    if(rules->blackWon())
+        winnerMessage = L"Wygrały czarne";
+    if(rules->isDraw())
+        winnerMessage = L"Remis";
+
+    if(rules->getEndOfGameReason() == 0)
+        endOfGameReason = L"Zbito wszystkie\nfigury przeciwnika";
+
+    if(rules->getEndOfGameReason() == 1)
+        endOfGameReason = L"Zablokowano wszystkie\nfigury przeciwnika";
+
+    if(rules->getEndOfGameReason() == 2)
+        endOfGameReason = L"Wykonano po 15 posunięć\nbez bicia ani ruchu pionem";
+
+
+
+    sf::Text mainText, commentText;
+    mainText.setFont(FontManager::instance().get("arial"));
+    commentText.setFont(FontManager::instance().get("arial"));
+
+    mainText.setPosition(800,50);
+    commentText.setPosition(800,150);
+
+    mainText.setColor(sf::Color(190,190,190));
+    commentText.setColor(sf::Color(190,190,190));
+
+    mainText.setCharacterSize(64);
+    commentText.setCharacterSize(25);
+
+    mainText.setString(winnerMessage);
+    commentText.setString(endOfGameReason);
+
+    Button button(sf::IntRect(900,650,250,80));
+    button.setBackgroundColor(sf::Color(0,155,155));
+    button.setText(L"Wyjście");
+
 
 
     while (window.isOpen()){
@@ -207,9 +241,17 @@ int main(){
                 window.close();
             MouseHandler::instance().handle(event);
         }
-        window.clear(sf::Color(100,100,100));
+        if(MouseHandler::instance().getButton() == sf::Mouse::Left &&
+           button.isPointInside(window.mapPixelToStd(MouseHandler::instance().getCurrentMousePosition()))){
+
+            window.close();
+        }
+        MouseHandler::instance().clear();
+        window.clear(sf::Color(70,70,70));
         window.draw(checkboard.drawer);
-        window.draw(text);
+        window.draw(mainText);
+        window.draw(commentText);
+        window.draw(button);
         window.display();
     }
 
