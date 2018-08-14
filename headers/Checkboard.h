@@ -2,6 +2,7 @@
 #define CHECKBOARD_H
 #include <SFML/Graphics.hpp>
 #include "ResourceManager.h"
+#include "basics.h"
 #include "Grid.h"
 #include <vector>
 #include <cassert>
@@ -9,6 +10,7 @@
 
 struct CheckerSpriteOnGrid{
     int x,y;
+    Checker type;
     sf::Sprite sprite;
     friend bool operator<(const CheckerSpriteOnGrid&a,const CheckerSpriteOnGrid&b){
         if(a.x == b.x)
@@ -18,9 +20,44 @@ struct CheckerSpriteOnGrid{
 };
 
 class CheckBoardDrawer : public sf::Drawable, public Grid{
+    int cellStyle = 1, checkersStyle = 1;
+    void updateTextureOfChecker(CheckerSpriteOnGrid& checker){
+        const Checker& type = checker.type;
+        if(type == Checker::black_pawn)
+            checker.sprite.setTexture(TextureManager::instance().get("blackPawn " + toStr(checkersStyle)));
+        if(type == Checker::black_queen)
+            checker.sprite.setTexture(TextureManager::instance().get("blackQueen " + toStr(checkersStyle)));
+        if(type == Checker::white_pawn)
+            checker.sprite.setTexture(TextureManager::instance().get("whitePawn " + toStr(checkersStyle)));
+        if(type == Checker::white_queen)
+            checker.sprite.setTexture(TextureManager::instance().get("whiteQueen " + toStr(checkersStyle)));
+    }
+
 public:
     std::vector<std::vector<sf::Sprite> > checkboard;
     std::vector<CheckerSpriteOnGrid > checkers;
+
+    void setCellStyle(int styleIndex){
+        if(cellStyle == styleIndex)
+            return;
+        cellStyle = styleIndex;
+
+        for(int i=0;i<getGridSize().x;i++){
+            for(int j=0;j<getGridSize().y;j++){
+                if((i+j) % 2  == 1)
+                    checkboard[i][j].setTexture(TextureManager::instance().get("blackCell " + toStr(cellStyle)));
+                else
+                    checkboard[i][j].setTexture(TextureManager::instance().get("whiteCell " + toStr(cellStyle)));
+            }
+        }
+    }
+    void setCheckersStyle(int styleIndex){
+        if(checkersStyle == styleIndex)
+            return;
+        checkersStyle = styleIndex;
+        for(auto &a : checkers)
+            updateTextureOfChecker(a);
+    }
 
     void setPosition(sf::Vector2i pos){
         position = pos;
@@ -31,6 +68,9 @@ public:
         else
             return sf::Vector2i(checkboard.size(),checkboard[0].size());
     }
+
+
+
     void resizeBoard(int x,int y){
         checkboard.clear();
         checkboard.resize(x);
@@ -38,9 +78,9 @@ public:
             for(int j=0;j<y;j++){
                 checkboard[i].push_back(sf::Sprite());
                 if((i+j) % 2  == 1)
-                    checkboard[i].back().setTexture(TextureManager::instance().get("blackCell 1"));
+                    checkboard[i].back().setTexture(TextureManager::instance().get("blackCell " + toStr(cellStyle)));
                 else
-                    checkboard[i].back().setTexture(TextureManager::instance().get("whiteCell 1"));
+                    checkboard[i].back().setTexture(TextureManager::instance().get("whiteCell " + toStr(cellStyle)));
             }
         }
         if(x > 0 && y > 0 && cellSize.x == 0)
@@ -85,17 +125,11 @@ public:
     void addChecker(int x,int y,Checker type){
         checkers.push_back(CheckerSpriteOnGrid());
         CheckerSpriteOnGrid& newChecker = checkers.back();
+        newChecker.type = type;
         newChecker.x = x;
         newChecker.y = y;
         assert(type != Checker::empty);
-         if(type == Checker::black_pawn)
-            newChecker.sprite.setTexture(TextureManager::instance().get("blackPawn 1"));
-        if(type == Checker::black_queen)
-            newChecker.sprite.setTexture(TextureManager::instance().get("blackQueen 1"));
-        if(type == Checker::white_pawn)
-            newChecker.sprite.setTexture(TextureManager::instance().get("whitePawn 1"));
-        if(type == Checker::white_queen)
-            newChecker.sprite.setTexture(TextureManager::instance().get("whiteQueen 1"));
+        updateTextureOfChecker(newChecker);
 
         sf::Vector2u standardSize = checkboard[0][0].getTexture()->getSize();
         newChecker.sprite.setScale(cellSize.x/(float)standardSize.x, cellSize.y/(float)standardSize.y);

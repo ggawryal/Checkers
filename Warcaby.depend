@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1534166909 source:d:\programowanie\warcaby\main.cpp
+1534258106 source:d:\programowanie\warcaby\main.cpp
 	<SFML/Graphics.hpp>
 	<iostream>
 	<vector>
@@ -465,22 +465,25 @@
 	<cassert>
 	<iostream>
 
-1534165135 d:\programowanie\warcaby\headers\movecontroller.h
+1534167242 d:\programowanie\warcaby\headers\movecontroller.h
 	<SFML/System.hpp>
 	"Checker.h"
 	"Checkboard.h"
 	"basics.h"
 	"MaxiJumpSequenceFinder.h"
 
-1533846522 d:\programowanie\warcaby\headers\basics.h
+1534249385 d:\programowanie\warcaby\headers\basics.h
 	<SFML/System.hpp>
+	<string>
+	<sstream>
 
 1533846522 source:d:\programowanie\warcaby\movecontroller.cpp
 	"MoveController.h"
 
-1534004995 d:\programowanie\warcaby\headers\checkboard.h
+1534255015 d:\programowanie\warcaby\headers\checkboard.h
 	<SFML/Graphics.hpp>
 	"ResourceManager.h"
+	"basics.h"
 	"Grid.h"
 	<vector>
 	<cassert>
@@ -495,19 +498,20 @@
 1533896479 d:\programowanie\warcaby\include\windowresizer.h
 	<SFML/Graphics.hpp>
 
-1534005057 source:d:\programowanie\warcaby\resourcemanager.cpp
+1534261380 source:d:\programowanie\warcaby\resourcemanager.cpp
 	"ResourceManager.h"
 
-1534005233 d:\programowanie\warcaby\headers\resourcemanager.h
+1534249553 d:\programowanie\warcaby\headers\resourcemanager.h
 	<vector>
 	<map>
 	<string>
+	<cassert>
 	<SFML/Graphics.hpp>
 
-1533899411 d:\programowanie\warcaby\headers\windowresizer.h
+1534167242 d:\programowanie\warcaby\headers\windowresizer.h
 	<SFML/Graphics.hpp>
 
-1534166849 d:\programowanie\warcaby\headers\button.h
+1534167242 d:\programowanie\warcaby\headers\button.h
 	<SFML/Graphics.hpp>
 	"ResourceManager.h"
 

@@ -1,6 +1,8 @@
 #ifndef BASICS_H
 #define BASICS_H
 #include <SFML/System.hpp>
+#include <string>
+#include <sstream>
 
 struct NotImplementedException : public std::logic_error{
     NotImplementedException() : std::logic_error("Function not yet implemented") { };
@@ -12,5 +14,11 @@ struct Quad{
     Quad(sf::Vector2i v1, sf::Vector2i v2) : Quad(v1.x,v1.y,v2.x,v2.y){}
 };
 
+template<class T>
+std::string toStr(const T t){
+    std::stringstream sstr;
+    sstr << t;
+    return sstr.str();
+}
 
 #endif // BASICS_H

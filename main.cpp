@@ -136,13 +136,14 @@ int main(){
 
     Checkboard checkboard;
     checkboard.setSize(8,8);
+    checkboard.drawer.setCellStyle(5);
+    checkboard.drawer.setCheckersStyle(3);
 
     CheckersArranger arranger(checkboard);
-    arranger.arrange(1,3);
+    arranger.arrange(3,3);
 
     checkboard.drawer.setPosition(sf::Vector2i(50,50));
     checkboard.drawer.setImageSize(700,700);
-
 
 
     GridPositioner gp(checkboard.drawer);

@@ -4,7 +4,8 @@
 #include <vector>
 #include <map>
 #include <string>
-#include <SFML/Graphics.hpp>
+#include <cassert>
+#include <SFML/Graphics.hpp>,
 
 class TextureManager{
     TextureManager() = default;
@@ -30,6 +31,7 @@ public:
     void loadAll();
 
     sf::Texture& get(const std::string& name){
+        assert(mapping.count(name) > 0);
         return textures[mapping[name]];
     }
     sf::Texture& operator[](const std::string&name){
