@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1534258106 source:d:\programowanie\warcaby\main.cpp
+1534272426 source:d:\programowanie\warcaby\main.cpp
 	<SFML/Graphics.hpp>
 	<iostream>
 	<vector>
@@ -498,7 +498,7 @@
 1533896479 d:\programowanie\warcaby\include\windowresizer.h
 	<SFML/Graphics.hpp>
 
-1534261380 source:d:\programowanie\warcaby\resourcemanager.cpp
+1534263451 source:d:\programowanie\warcaby\resourcemanager.cpp
 	"ResourceManager.h"
 
 1534249553 d:\programowanie\warcaby\headers\resourcemanager.h

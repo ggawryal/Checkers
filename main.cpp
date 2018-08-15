@@ -136,7 +136,7 @@ int main(){
 
     Checkboard checkboard;
     checkboard.setSize(8,8);
-    checkboard.drawer.setCellStyle(5);
+    checkboard.drawer.setCellStyle(2);
     checkboard.drawer.setCheckersStyle(3);
 
     CheckersArranger arranger(checkboard);
