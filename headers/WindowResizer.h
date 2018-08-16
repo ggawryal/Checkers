@@ -4,6 +4,8 @@
 
 class ResizableRenderWindow : public sf::RenderWindow{
     sf::Vector2i standardWindowSize;
+    sf::Color bkgColor = sf::Color(0,0,0,255);
+    std::vector<sf::Drawable*> drawables;
     public:
 
         ResizableRenderWindow()	: sf::RenderWindow(){}
@@ -17,6 +19,27 @@ class ResizableRenderWindow : public sf::RenderWindow{
 
         void setStdSize(sf::Vector2u size){
             standardWindowSize = sf::Vector2i(size);
+        }
+
+        void close(){
+            RenderWindow::close();
+            exit(0);
+        }
+        void setBackgroundColor(sf::Color c){
+            bkgColor = c;
+        }
+        void addDrawable(sf::Drawable* d){
+            drawables.push_back(d);
+        }
+        void clearDrawables(){
+            drawables.clear();
+        }
+
+        void render(){
+            clear(bkgColor);
+            for(auto& a : drawables)
+                draw(*a);
+            display();
         }
 
         template<class T>
