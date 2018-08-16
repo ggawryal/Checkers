@@ -76,6 +76,9 @@
 		<Unit filename="headers/ResourceManager.h" />
 		<Unit filename="headers/WindowResizer.h" />
 		<Unit filename="headers/basics.h" />
+		<Unit filename="icon.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

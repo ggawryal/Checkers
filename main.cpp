@@ -128,11 +128,42 @@ public:
 
 
 int main(){
-    ResizableRenderWindow window(sf::VideoMode(1280, 800), "Checkers!");
+    ResizableRenderWindow window(sf::VideoMode(1280, 800), "Checkers! ");
     window.setStdSize(window.getSize());
 
     TextureManager::instance().loadAll();
     FontManager::instance().loadAll();
+
+    sf::Color backgroundColor = sf::Color(0,155,155);
+    Button b1(sf::IntRect(500,100,300,100),backgroundColor,"Nowa gra"),
+           b2(sf::IntRect(500,300,300,100),backgroundColor,"Opcje"),
+           b3(sf::IntRect(500,500,300,100),backgroundColor,L"Wyjście");
+
+
+    while (window.isOpen()){
+        MouseHandler::instance().clear();
+        sf::Event event;
+        while (window.pollEvent(event)){
+            if (event.type == sf::Event::Closed)
+                window.close();
+            MouseHandler::instance().handle(event);
+        }
+
+        window.clear(sf::Color(190,190,190));
+        window.draw(b1);
+        window.draw(b2);
+        window.draw(b3);
+        if(b1.isClicked(window)){
+            break;
+        }
+        if(b3.isClicked(window)){
+            window.close();
+            exit(0);
+        }
+        window.display();
+    }
+
+
 
     Checkboard checkboard;
     checkboard.setSize(8,8);
@@ -242,13 +273,11 @@ int main(){
                 window.close();
             MouseHandler::instance().handle(event);
         }
-        if(MouseHandler::instance().getButton() == sf::Mouse::Left &&
-           button.isPointInside(window.mapPixelToStd(MouseHandler::instance().getCurrentMousePosition()))){
-
+        if(button.isClicked(window))
             window.close();
-        }
+
         MouseHandler::instance().clear();
-        window.clear(sf::Color(70,70,70));
+        window.clear(sf::Color(190,190,190));
         window.draw(checkboard.drawer);
         window.draw(mainText);
         window.draw(commentText);

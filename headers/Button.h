@@ -16,9 +16,14 @@ class Button : public sf::Drawable{
             setRect(rect);
             text.setFont(FontManager::instance().get("arial"));
             text.setCharacterSize(32);
-            text.setColor(sf::Color(190,190,190));
+            text.setColor(sf::Color(70,70,70));
         }
-
+        Button(sf::IntRect rect,sf::Color color) :Button(rect){
+            setBackgroundColor(color);
+        }
+        Button(sf::IntRect rect,sf::Color color, sf::String name) :Button(rect,color){
+            setText(name);
+        }
         void setPosition(sf::Vector2f position){
             shape.setPosition(position);
             fixTextAlignment();
@@ -56,6 +61,12 @@ class Button : public sf::Drawable{
             return (point.x >= shape.getPosition().x && point.y >= shape.getPosition().y &&
                point.x <= shape.getPosition().x + shape.getSize().x && point.y <= shape.getPosition().y + shape.getSize().y);
         }
+
+        bool isClicked(ResizableRenderWindow& window){
+            return MouseHandler::instance().getButton() == sf::Mouse::Left &&
+                isPointInside(window.mapPixelToStd(MouseHandler::instance().getCurrentMousePosition()));
+        }
+
 
 };
 
