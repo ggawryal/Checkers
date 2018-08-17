@@ -52,20 +52,29 @@ class Button : public sf::Drawable{
             fixTextAlignment();
 
         }
-        virtual void draw(sf::RenderTarget& target,sf::RenderStates states) const override{
-            target.draw(shape,states);
-            target.draw(text,states);
+        void setTexture(sf::Texture* texture){
+            shape.setTexture(texture);
         }
+        void setOutline(int thickness, sf::Color color = sf::Color::Black){
+            shape.setOutlineThickness(thickness);
+            shape.setOutlineColor(color);
+        }
+
 
         bool isPointInside(sf::Vector2i point){
             return (point.x >= shape.getPosition().x && point.y >= shape.getPosition().y &&
                point.x <= shape.getPosition().x + shape.getSize().x && point.y <= shape.getPosition().y + shape.getSize().y);
         }
-
         bool isClicked(ResizableRenderWindow& window){
             return MouseHandler::instance().getButton() == sf::Mouse::Left &&
                 isPointInside(window.mapPixelToStd(MouseHandler::instance().getCurrentMousePosition()));
         }
+
+        virtual void draw(sf::RenderTarget& target,sf::RenderStates states) const override{
+            target.draw(shape,states);
+            target.draw(text,states);
+        }
+
 
 
 };

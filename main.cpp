@@ -134,6 +134,9 @@ int main(){
     TextureManager::instance().loadAll();
     FontManager::instance().loadAll();
 
+    int selectedCellStyle = 0;
+    int selectedCheckersStyle = 0;
+
     while(window.isOpen()){
         sf::Color mainMenuButtonColor = sf::Color(0,155,155);
         Button b1(sf::IntRect(500,100,300,100),mainMenuButtonColor,"Nowa gra"),
@@ -144,7 +147,7 @@ int main(){
         window.addDrawable(&b2);
         window.addDrawable(&b3);
 
-
+        bool runSettingsMenu = false;
         while (window.isOpen()){
             MouseHandler::instance().clear();
             sf::Event event;
@@ -156,6 +159,10 @@ int main(){
             if(b1.isClicked(window))
                 break;
 
+            if(b2.isClicked(window)){
+                runSettingsMenu = true;
+                break;
+            }
             if(b3.isClicked(window))
                 window.close();
 
@@ -163,125 +170,189 @@ int main(){
         }
         window.clearDrawables();
 
-
-        Checkboard checkboard;
-        checkboard.setSize(8,8);
-        checkboard.drawer.setCellStyle(2);
-        checkboard.drawer.setCheckersStyle(3);
-
-        CheckersArranger arranger(checkboard);
-        arranger.arrange(1,1);
-
-        checkboard.drawer.setPosition(sf::Vector2i(50,50));
-        checkboard.drawer.setImageSize(700,700);
-
-
-        GridPositioner gp(checkboard.drawer);
-
-        MoveController mv(checkboard);
-        Highlighter highlighter(checkboard);
-
-        shared_ptr<Rules> rules(new ClassicRules(mv));
-
-        vector<unique_ptr<Player> > player;
-        player.push_back(unique_ptr<Player>(new HumanPlayer(window,gp,mv,highlighter, rules)));
-        player.push_back(unique_ptr<Player>(new HumanPlayer(window,gp,mv,highlighter, rules)));
-
-        player[0]->setColor(true);
-        player[1]->setColor(false);
-        int currentPlayerId = 0;
-
-        while (window.isOpen()){
-
-            sf::Event event;
-            while (window.pollEvent(event)){
-                if (event.type == sf::Event::Closed){
-                    window.close();
+        if(runSettingsMenu){
+            Button backToMainMenu(sf::IntRect(1000,700,200,80),mainMenuButtonColor,L"Wróć");
+            window.addDrawable(&backToMainMenu);
+            vector<Button> cellsStyleSprites;
+            vector<Button> checkersStyleSprites;
+            for(int i=1;;i++){
+                if(TextureManager::instance().contains("cells " + toStr(i))){
+                    cellsStyleSprites.push_back(Button(sf::IntRect(50,50+120*(i-1),180,90)));
+                    cellsStyleSprites.back().setTexture(&TextureManager::instance().get("cells " + toStr(i)));
+                    cellsStyleSprites.back().setOutline(1);
                 }
-                MouseHandler::instance().handle(event);
-            }
-
-            if(mv.isBlackOnTurn() != currentPlayerId){
-                player[currentPlayerId]->onEndOfTurn();
-                currentPlayerId ^= 1;
-                if(rules->isEndOfGame())
+                else
                     break;
-                player[currentPlayerId]->onBeginOfTurn();
             }
-            player[currentPlayerId]->onTurn();
+
+            for(auto &a :cellsStyleSprites)
+                window.addDrawable(&a);
+            for(int i=1;;i++){
+                if(TextureManager::instance().contains("whitePawn " + toStr(i))){
+                    checkersStyleSprites.push_back(Button(sf::IntRect(500,50+120*(i-1),90,90)));
+                    checkersStyleSprites.back().setTexture(&TextureManager::instance().get("whitePawn " + toStr(i)));
+                    checkersStyleSprites.back().setOutline(1);
+                }
+                else
+                    break;
+            }
+            for(auto &a :checkersStyleSprites)
+                window.addDrawable(&a);
 
 
 
-            if(currentPlayerId == 0)
-                window.clear(sf::Color(220,170,50));
-            else
-                window.clear(sf::Color(100,100,100));
-            window.draw(checkboard.drawer);
-            window.display();
+            cellsStyleSprites[selectedCellStyle].setOutline(5,sf::Color(40,140,240));
+            checkersStyleSprites[selectedCheckersStyle].setOutline(5,sf::Color(40,140,240));
+
+            while (window.isOpen()){
+                MouseHandler::instance().clear();
+                sf::Event event;
+                while (window.pollEvent(event)){
+                    if (event.type == sf::Event::Closed)
+                        window.close();
+                    MouseHandler::instance().handle(event);
+                }
+                for(int i=0;i<cellsStyleSprites.size();i++){
+                    if(cellsStyleSprites[i].isClicked(window)){
+                        cellsStyleSprites[selectedCellStyle].setOutline(1);
+                        selectedCellStyle = i;
+                        cellsStyleSprites[selectedCellStyle].setOutline(5,sf::Color(40,140,240));
+                    }
+                }
+                for(int i=0;i<checkersStyleSprites.size();i++){
+                    if(checkersStyleSprites[i].isClicked(window)){
+                        checkersStyleSprites[selectedCheckersStyle].setOutline(1);
+                        selectedCheckersStyle = i;
+                        checkersStyleSprites[selectedCheckersStyle].setOutline(5,sf::Color(40,140,240));
+                    }
+                }
+
+                if(backToMainMenu.isClicked(window))
+                    break;
+                window.render();
+            }
+            window.clearDrawables();
         }
+        else{
+            Checkboard checkboard;
+            checkboard.setSize(8,8);
+            checkboard.drawer.setCellStyle(selectedCellStyle+1);
+            checkboard.drawer.setCheckersStyle(selectedCheckersStyle+1);
+
+            CheckersArranger arranger(checkboard);
+            arranger.arrange(1,1);
+
+            checkboard.drawer.setPosition(sf::Vector2i(50,50));
+            checkboard.drawer.setImageSize(700,700);
 
 
-        sf::String winnerMessage = "";
-        sf::String endOfGameReason = "";
+            GridPositioner gp(checkboard.drawer);
 
-        if(rules->whiteWon())
-            winnerMessage = L"Wygrały białe";
-        if(rules->blackWon())
-            winnerMessage = L"Wygrały czarne";
-        if(rules->isDraw())
-            winnerMessage = L"Remis";
+            MoveController mv(checkboard);
+            Highlighter highlighter(checkboard);
 
-        if(rules->getEndOfGameReason() == 0)
-            endOfGameReason = L"Zbito wszystkie\nfigury przeciwnika";
+            shared_ptr<Rules> rules(new ClassicRules(mv));
 
-        if(rules->getEndOfGameReason() == 1)
-            endOfGameReason = L"Zablokowano wszystkie\nfigury przeciwnika";
+            vector<unique_ptr<Player> > player;
+            player.push_back(unique_ptr<Player>(new HumanPlayer(window,gp,mv,highlighter, rules)));
+            player.push_back(unique_ptr<Player>(new HumanPlayer(window,gp,mv,highlighter, rules)));
 
-        if(rules->getEndOfGameReason() == 2)
-            endOfGameReason = L"Wykonano po 15 posunięć\nbez bicia ani ruchu pionem";
+            player[0]->setColor(true);
+            player[1]->setColor(false);
+            int currentPlayerId = 0;
+
+            while (window.isOpen()){
+
+                sf::Event event;
+                while (window.pollEvent(event)){
+                    if (event.type == sf::Event::Closed){
+                        window.close();
+                    }
+                    MouseHandler::instance().handle(event);
+                }
+
+                if(mv.isBlackOnTurn() != currentPlayerId){
+                    player[currentPlayerId]->onEndOfTurn();
+                    currentPlayerId ^= 1;
+                    if(rules->isEndOfGame())
+                        break;
+                    player[currentPlayerId]->onBeginOfTurn();
+                }
+                player[currentPlayerId]->onTurn();
 
 
 
-        sf::Text mainText, commentText;
-        mainText.setFont(FontManager::instance().get("arial"));
-        commentText.setFont(FontManager::instance().get("arial"));
+                if(currentPlayerId == 0)
+                    window.clear(sf::Color(220,170,50));
+                else
+                    window.clear(sf::Color(100,100,100));
+                window.draw(checkboard.drawer);
+                window.display();
+            }
 
-        mainText.setPosition(800,50);
-        commentText.setPosition(800,150);
 
-        mainText.setColor(sf::Color(90,90,90));
-        commentText.setColor(sf::Color(90,90,90));
+            sf::String winnerMessage = "";
+            sf::String endOfGameReason = "";
 
-        mainText.setCharacterSize(64);
-        commentText.setCharacterSize(25);
+            if(rules->whiteWon())
+                winnerMessage = L"Wygrały białe";
+            if(rules->blackWon())
+                winnerMessage = L"Wygrały czarne";
+            if(rules->isDraw())
+                winnerMessage = L"Remis";
 
-        mainText.setString(winnerMessage);
-        commentText.setString(endOfGameReason);
+            if(rules->getEndOfGameReason() == 0)
+                endOfGameReason = L"Zbito wszystkie\nfigury przeciwnika";
 
-        Button exitButton(sf::IntRect(900,650,250,80),sf::Color(0,155,155),L"Wyjście");
-        Button mainMenuButton(sf::IntRect(900,550,250,80),sf::Color(0,155,155),L"Menu Główne");
+            if(rules->getEndOfGameReason() == 1)
+                endOfGameReason = L"Zablokowano wszystkie\nfigury przeciwnika";
 
-        window.addDrawable(&checkboard.drawer);
-        window.addDrawable(&mainText);
-        window.addDrawable(&commentText);
-        window.addDrawable(&mainMenuButton);
-        window.addDrawable(&exitButton);
+            if(rules->getEndOfGameReason() == 2)
+                endOfGameReason = L"Wykonano po 15 posunięć\nbez bicia ani ruchu pionem";
 
-        while (window.isOpen()){
-            MouseHandler::instance().clear();
-            sf::Event event;
-            while (window.pollEvent(event)){
-                if (event.type == sf::Event::Closed)
+
+
+            sf::Text mainText, commentText;
+            mainText.setFont(FontManager::instance().get("arial"));
+            commentText.setFont(FontManager::instance().get("arial"));
+
+            mainText.setPosition(800,50);
+            commentText.setPosition(800,150);
+
+            mainText.setColor(sf::Color(90,90,90));
+            commentText.setColor(sf::Color(90,90,90));
+
+            mainText.setCharacterSize(64);
+            commentText.setCharacterSize(25);
+
+            mainText.setString(winnerMessage);
+            commentText.setString(endOfGameReason);
+
+            Button exitButton(sf::IntRect(900,650,250,80),sf::Color(0,155,155),L"Wyjście");
+            Button mainMenuButton(sf::IntRect(900,550,250,80),sf::Color(0,155,155),L"Menu Główne");
+
+            window.addDrawable(&checkboard.drawer);
+            window.addDrawable(&mainText);
+            window.addDrawable(&commentText);
+            window.addDrawable(&mainMenuButton);
+            window.addDrawable(&exitButton);
+
+            while (window.isOpen()){
+                MouseHandler::instance().clear();
+                sf::Event event;
+                while (window.pollEvent(event)){
+                    if (event.type == sf::Event::Closed)
+                        window.close();
+                    MouseHandler::instance().handle(event);
+                }
+                if(exitButton.isClicked(window))
                     window.close();
-                MouseHandler::instance().handle(event);
+                if(mainMenuButton.isClicked(window))
+                    break;
+                window.render();
             }
-            if(exitButton.isClicked(window))
-                window.close();
-            if(mainMenuButton.isClicked(window))
-                break;
-            window.render();
+            window.clearDrawables();
         }
-        window.clearDrawables();
     }
 
     return 0;

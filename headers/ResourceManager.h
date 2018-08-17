@@ -30,6 +30,10 @@ public:
     }
     void loadAll();
 
+    bool contains(const std::string& name){
+        return mapping.count(name) > 0;
+    }
+
     sf::Texture& get(const std::string& name){
         assert(mapping.count(name) > 0);
         return textures[mapping[name]];
