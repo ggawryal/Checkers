@@ -20,7 +20,7 @@ struct CheckerSpriteOnGrid{
 };
 
 class CheckBoardDrawer : public sf::Drawable, public Grid{
-    int cellStyle = 1, checkersStyle = 1;
+    int cellStyle = 0, checkersStyle = 0;
     void updateTextureOfChecker(CheckerSpriteOnGrid& checker){
         const Checker& type = checker.type;
         if(type == Checker::black_pawn)

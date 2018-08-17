@@ -2,20 +2,17 @@
 #include <iostream>
 #include <vector>
 #include <memory>
-#include <functional>
+#include <fstream>
 #include <cassert>
 #include <set>
 #include "Checker.h"
-#include "MaxiJumpSequenceFinder.h"
 #include "ResourceManager.h"
-#include "Grid.h"
 #include "Checkboard.h"
 #include "MoveController.h"
 #include "MouseHandler.h"
-#include "Highlighter.h"
 #include "WindowResizer.h"
 #include "Button.h"
-
+#include "Player.h"
 using namespace std;
 
 
@@ -61,70 +58,6 @@ public:
     }
 };
 
-class Player{
-    bool color = true;
-    public:
-        virtual void onBeginOfTurn() = 0;
-        virtual void onTurn() = 0;
-        virtual void onEndOfTurn() = 0;
-        bool playsWhite(){
-            return color;
-        }
-        void setColor(bool white){
-            color = white;
-        }
-
-
-};
-
-class HumanPlayer : public Player{
-    GridPositioner& gridPositioner;
-    MoveController& moveController;
-    Highlighter& highlighter;
-    shared_ptr<Rules> rules;
-    ResizableRenderWindow& window;
-    sf::Vector2i currentPawn = sf::Vector2i(-1,-1);
-public:
-    HumanPlayer(ResizableRenderWindow& rw, GridPositioner& gd, MoveController& mv, Highlighter& hl,shared_ptr<Rules> rul) :gridPositioner(gd), window(rw), moveController(mv), highlighter(hl) {rules = rul;}
-    virtual ~HumanPlayer(){}
-
-    virtual void onBeginOfTurn() {}
-    virtual void onEndOfTurn() {
-        if(currentPawn != sf::Vector2i(-1,-1))
-            highlighter.resetCheckerHighlight(currentPawn.x,currentPawn.y);
-        currentPawn = sf::Vector2i(-1,-1);
-    }
-
-
-    virtual void onTurn() override{
-        if(gridPositioner.getCellUnder(window.mapPixelToStd(MouseHandler::instance().getCurrentMousePosition())) != sf::Vector2i(-1,-1)){
-            if(MouseHandler::instance().getButton() == sf::Mouse::Left){
-                if(currentPawn == sf::Vector2i(-1,-1)){
-                    auto cell = gridPositioner.getCellUnder(window.mapPixelToStd(sf::Mouse::getPosition(window)));
-                    if(isMyChecker(playsWhite(), moveController.getChecker(cell.x,cell.y)) && rules->existAnyCorrectMoveWith(cell.x,cell.y)){
-                        currentPawn = cell;
-                        highlighter.highlightChecker(currentPawn.x,currentPawn.y,sf::Color(0,255,128));
-                    }
-                }
-                else{
-                    auto cell = gridPositioner.getCellUnder(window.mapPixelToStd(sf::Mouse::getPosition(window)));
-                    Quad q = Quad(currentPawn,cell);
-                    if(rules->isCorrectMove(q)){
-                       moveController.move(currentPawn.x,currentPawn.y,cell.x,cell.y);
-                       currentPawn = cell;
-                    }
-                }
-            }
-            if(MouseHandler::instance().getButton() == sf::Mouse::Right && moveController.countOfJumpedOverCheckers() == 0){
-                if(currentPawn != sf::Vector2i(-1,-1))
-                    highlighter.resetCheckerHighlight(currentPawn.x,currentPawn.y);
-                currentPawn = sf::Vector2i(-1,-1);
-            }
-
-            MouseHandler::instance().clear();
-        }
-    }
-};
 
 
 int main(){
@@ -136,6 +69,12 @@ int main(){
 
     int selectedCellStyle = 0;
     int selectedCheckersStyle = 0;
+
+    ifstream dataFile;
+    dataFile.open("data/save.dat");
+    dataFile >> selectedCellStyle;
+    dataFile >> selectedCheckersStyle;
+    dataFile.close();
 
     while(window.isOpen()){
         sf::Color mainMenuButtonColor = sf::Color(0,155,155);
@@ -175,9 +114,9 @@ int main(){
             window.addDrawable(&backToMainMenu);
             vector<Button> cellsStyleSprites;
             vector<Button> checkersStyleSprites;
-            for(int i=1;;i++){
+            for(int i=0;;i++){
                 if(TextureManager::instance().contains("cells " + toStr(i))){
-                    cellsStyleSprites.push_back(Button(sf::IntRect(50,50+120*(i-1),180,90)));
+                    cellsStyleSprites.push_back(Button(sf::IntRect(50,50+120*i,180,90)));
                     cellsStyleSprites.back().setTexture(&TextureManager::instance().get("cells " + toStr(i)));
                     cellsStyleSprites.back().setOutline(1);
                 }
@@ -187,9 +126,9 @@ int main(){
 
             for(auto &a :cellsStyleSprites)
                 window.addDrawable(&a);
-            for(int i=1;;i++){
+            for(int i=0;;i++){
                 if(TextureManager::instance().contains("whitePawn " + toStr(i))){
-                    checkersStyleSprites.push_back(Button(sf::IntRect(500,50+120*(i-1),90,90)));
+                    checkersStyleSprites.push_back(Button(sf::IntRect(500,50+120*i,90,90)));
                     checkersStyleSprites.back().setTexture(&TextureManager::instance().get("whitePawn " + toStr(i)));
                     checkersStyleSprites.back().setOutline(1);
                 }
@@ -212,11 +151,13 @@ int main(){
                         window.close();
                     MouseHandler::instance().handle(event);
                 }
+                bool changed = false;
                 for(int i=0;i<cellsStyleSprites.size();i++){
                     if(cellsStyleSprites[i].isClicked(window)){
                         cellsStyleSprites[selectedCellStyle].setOutline(1);
                         selectedCellStyle = i;
                         cellsStyleSprites[selectedCellStyle].setOutline(5,sf::Color(40,140,240));
+                        changed = true;
                     }
                 }
                 for(int i=0;i<checkersStyleSprites.size();i++){
@@ -224,9 +165,15 @@ int main(){
                         checkersStyleSprites[selectedCheckersStyle].setOutline(1);
                         selectedCheckersStyle = i;
                         checkersStyleSprites[selectedCheckersStyle].setOutline(5,sf::Color(40,140,240));
+                        changed = true;
                     }
                 }
-
+                if(changed){
+                    ofstream dataFile;
+                    dataFile.open("data/save.dat");
+                    dataFile << selectedCellStyle<<" " <<selectedCheckersStyle;
+                    dataFile.close();
+                }
                 if(backToMainMenu.isClicked(window))
                     break;
                 window.render();
@@ -236,8 +183,8 @@ int main(){
         else{
             Checkboard checkboard;
             checkboard.setSize(8,8);
-            checkboard.drawer.setCellStyle(selectedCellStyle+1);
-            checkboard.drawer.setCheckersStyle(selectedCheckersStyle+1);
+            checkboard.drawer.setCellStyle(selectedCellStyle);
+            checkboard.drawer.setCheckersStyle(selectedCheckersStyle);
 
             CheckersArranger arranger(checkboard);
             arranger.arrange(1,1);
@@ -249,6 +196,7 @@ int main(){
             GridPositioner gp(checkboard.drawer);
 
             MoveController mv(checkboard);
+
             Highlighter highlighter(checkboard);
 
             shared_ptr<Rules> rules(new ClassicRules(mv));
