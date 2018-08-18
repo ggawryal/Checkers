@@ -34,7 +34,9 @@ class MoveController{
     }
 
 public:
-    MoveController(Checkboard&c) : checkboard(c){
+    MoveController(Checkboard&c) : checkboard(c){}
+
+    bool start(){
         mjsf.calculateForWholeBoard(checkboard.getBoard(),whiteOnTurn);
         jumpingCheckerStartPos = sf::Vector2i(-1,-1);
         checkerCountAfterMoves.push_back(getPawnCount(true) + getPawnCount(false));

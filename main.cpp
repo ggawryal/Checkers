@@ -24,7 +24,7 @@ public:
     void arrange(int heightBlack, int heightWite, bool blackUpper = true){
         assert(heightBlack + heightWite <= checkboard.getHeight());
 
-        Checker upper_pawn = black_queen;
+        Checker upper_pawn = black_pawn;
         Checker lower_pawn = white_pawn;
 
         if(blackUpper == false){
@@ -181,25 +181,77 @@ int main(){
             window.clearDrawables();
         }
         else{
+            Button brazilianRulesButton(sf::IntRect(50,50,250,250),mainMenuButtonColor,"Klasyczne 8x8\n(brazylijskie)"),
+                   polishRulesButton(sf::IntRect(320,50,250,250),mainMenuButtonColor,"Klasyczne 10x10\n(polskie)"),
+                   canadianRulesButton(sf::IntRect(50,320,250,250),mainMenuButtonColor,L"Klasyczne 12x12\n(kanadyjskie)");
+                  // bilinearRulesButton(sf::IntRect(320,320,250,250),mainMenuButtonColor,L"Dwuliniowe");
+            Button backToMainMenu(sf::IntRect(1000,700,200,80),mainMenuButtonColor,L"Wróć");
+
+            window.addDrawable(&backToMainMenu);
+            window.addDrawable(&brazilianRulesButton);
+            window.addDrawable(&polishRulesButton);
+            window.addDrawable(&canadianRulesButton);
+          //  window.addDrawable(&bilinearRulesButton);
+
+
             Checkboard checkboard;
-            checkboard.setSize(8,8);
+            CheckersArranger arranger(checkboard);
+            MoveController mv(checkboard);
+            shared_ptr<Rules> rules;
+
+            bool backToMenu = false;
+            while (window.isOpen()){
+                MouseHandler::instance().clear();
+                sf::Event event;
+                while (window.pollEvent(event)){
+                    if (event.type == sf::Event::Closed)
+                        window.close();
+                    MouseHandler::instance().handle(event);
+                }
+                if(backToMainMenu.isClicked(window)){
+                    backToMenu = true;
+                    break;
+                }
+
+
+                if(brazilianRulesButton.isClicked(window)){
+                    rules = move(shared_ptr<Rules>(new ClassicRules(mv)));
+                    checkboard.setSize(8,8);
+                    arranger.arrange(3,3);
+                    break;
+                }
+                if(polishRulesButton.isClicked(window)){
+                    rules = move(shared_ptr<Rules>(new ClassicRules(mv)));
+                    checkboard.setSize(10,10);
+                    arranger.arrange(4,4);
+                    break;
+                }
+                if(canadianRulesButton.isClicked(window)){
+                    rules = move(shared_ptr<Rules>(new ClassicRules(mv)));
+                    checkboard.setSize(12,12);
+                    arranger.arrange(5,5);
+                    break;
+                }
+                window.render();
+
+            }
+            window.clearDrawables();
+
+            if(backToMenu)
+                continue;
+
             checkboard.drawer.setCellStyle(selectedCellStyle);
             checkboard.drawer.setCheckersStyle(selectedCheckersStyle);
-
-            CheckersArranger arranger(checkboard);
-            arranger.arrange(1,1);
 
             checkboard.drawer.setPosition(sf::Vector2i(50,50));
             checkboard.drawer.setImageSize(700,700);
 
+            mv.start();
 
             GridPositioner gp(checkboard.drawer);
-
-            MoveController mv(checkboard);
-
             Highlighter highlighter(checkboard);
 
-            shared_ptr<Rules> rules(new ClassicRules(mv));
+
 
             vector<unique_ptr<Player> > player;
             player.push_back(unique_ptr<Player>(new HumanPlayer(window,gp,mv,highlighter, rules)));
