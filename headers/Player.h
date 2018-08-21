@@ -4,6 +4,9 @@
 #include "MoveController.h"
 #include "Highlighter.h"
 #include "WindowResizer.h"
+#include "MouseHandler.h"
+#include <iostream>
+#include <memory>
 
 
 class Player{
@@ -26,11 +29,11 @@ class HumanPlayer : public Player{
     GridPositioner& gridPositioner;
     MoveController& moveController;
     Highlighter& highlighter;
-    shared_ptr<Rules> rules;
+    std::shared_ptr<Rules> rules;
     ResizableRenderWindow& window;
     sf::Vector2i currentPawn = sf::Vector2i(-1,-1);
 public:
-    HumanPlayer(ResizableRenderWindow& rw, GridPositioner& gd, MoveController& mv, Highlighter& hl,shared_ptr<Rules> rul) :gridPositioner(gd), window(rw), moveController(mv), highlighter(hl) {rules = rul;}
+    HumanPlayer(ResizableRenderWindow& rw, GridPositioner& gd, MoveController& mv, Highlighter& hl,std::shared_ptr<Rules> rul) :gridPositioner(gd), window(rw), moveController(mv), highlighter(hl) {rules = rul;}
     virtual ~HumanPlayer(){}
 
     virtual void onBeginOfTurn() {}
